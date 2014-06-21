@@ -23,3 +23,7 @@ PRODUCT_COPY_FILES += \
 # Ramdisk
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init.carrier.rc:root/init.carrier.rc
+    
+# Operator name
+PRODUCT_COPY_FILES += \
+    device/samsung/serranodsdd/plmn_se13.bin:system/etc/plmn_se13.bin
