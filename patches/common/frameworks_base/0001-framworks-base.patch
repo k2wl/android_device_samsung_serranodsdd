@@ -1,0 +1,67 @@
+From efe19df4074f0a113bf436323248060b0718f6bd Mon Sep 17 00:00:00 2001
+From: k2wl <k2wl@github.com>
+Date: Sat, 21 Jun 2014 10:01:17 +0530
+Subject: [PATCH] s4 mini ril and operator fix
+
+Change-Id: I936c321f4d4d0c7271343b8acf2bc5650e539aff
+---
+ .../android/systemui/statusbar/phone/PhoneStatusBar.java |  5 +----
+ .../com/android/internal/telephony/RILConstants.java     | 16 ++++++++--------
+ 2 files changed, 9 insertions(+), 12 deletions(-)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java
+index b1c82db..af73a02 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java
+@@ -803,7 +803,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
+             }
+ 
+             mCarrierLabel = (TextView)mStatusBarWindow.findViewById(R.id.carrier_label);
+-            mSubsLabel = (TextView)mStatusBarWindow.findViewById(R.id.subs_label);
+             mShowCarrierInPanel = (mCarrierLabel != null);
+ 
+             if (DEBUG) Log.v(TAG, "carrierlabel=" + mCarrierLabel + " show=" +
+@@ -814,12 +813,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
+                 // for mobile devices, we always show mobile connection info here (SPN/PLMN)
+                 // for other devices, we show whatever network is connected
+                 if (mMSimNetworkController.hasMobileDataFeature()) {
+-                    mMSimNetworkController.addMobileLabelView(mCarrierLabel);
++                    mMSimNetworkController.addSubsLabelView(mCarrierLabel);
+                 } else {
+                     mMSimNetworkController.addCombinedLabelView(mCarrierLabel);
+                 }
+-                mSubsLabel.setVisibility(View.VISIBLE);
+-                mMSimNetworkController.addSubsLabelView(mSubsLabel);
+                 // set up the dynamic hide/show of the label
+                 mPile.setOnSizeChangedListener(new OnSizeChangedListener() {
+                     @Override
+diff --git a/telephony/java/com/android/internal/telephony/RILConstants.java b/telephony/java/com/android/internal/telephony/RILConstants.java
+index e132d53..c8eb209 100644
+--- a/telephony/java/com/android/internal/telephony/RILConstants.java
++++ b/telephony/java/com/android/internal/telephony/RILConstants.java
+@@ -284,14 +284,14 @@ cat include/telephony/ril.h | \
+     int RIL_REQUEST_ACKNOWLEDGE_INCOMING_GSM_SMS_WITH_PDU = 106;
+     int RIL_REQUEST_STK_SEND_ENVELOPE_WITH_STATUS = 107;
+     int RIL_REQUEST_VOICE_RADIO_TECH = 108;
+-    int RIL_REQUEST_GET_CELL_INFO_LIST = 109;
+-    int RIL_REQUEST_SET_UNSOL_CELL_INFO_LIST_RATE = 110;
+-    int RIL_REQUEST_SET_INITIAL_ATTACH_APN = 111;
+-    int RIL_REQUEST_IMS_REGISTRATION_STATE = 112;
+-    int RIL_REQUEST_IMS_SEND_SMS = 113;
+-    int RIL_REQUEST_GET_DATA_CALL_PROFILE = 114;
+-    int RIL_REQUEST_SET_UICC_SUBSCRIPTION = 115;
+-    int RIL_REQUEST_SET_DATA_SUBSCRIPTION = 116;
++    int RIL_REQUEST_GET_CELL_INFO_LIST = 116;
++    int RIL_REQUEST_SET_UNSOL_CELL_INFO_LIST_RATE = 114;
++    int RIL_REQUEST_SET_INITIAL_ATTACH_APN = 115;
++    int RIL_REQUEST_IMS_REGISTRATION_STATE = 109;
++    int RIL_REQUEST_IMS_SEND_SMS = 110;
++    int RIL_REQUEST_GET_DATA_CALL_PROFILE = 111;
++    int RIL_REQUEST_SET_UICC_SUBSCRIPTION = 112;
++    int RIL_REQUEST_SET_DATA_SUBSCRIPTION = 113;
+ 
+     int RIL_UNSOL_RESPONSE_BASE = 1000;
+     int RIL_UNSOL_RESPONSE_RADIO_STATE_CHANGED = 1000;
+-- 
+1.9.1
+
