@@ -1,0 +1,28 @@
+From 1648b603276bbc107b1bf604300b270f2b4d4286 Mon Sep 17 00:00:00 2001
+From: k2wl <k2wl@github.com>
+Date: Sat, 26 Jul 2014 04:28:01 +0530
+Subject: [PATCH] Signal strength fix for s4 mini duos. 
+This patch is provided by @ sekil on xda
+modem on s4 mini duos gives very erratic value for signal strength. this patch allows the signal strength to displayed properly.
+
+Change-Id: Id7339b1bf78ed049e9ba6e5f502e9f5e2617ad49
+Signed-off-by: k2wl <k2wl@github.com>
+---
+ telephony/java/android/telephony/SignalStrength.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/telephony/java/android/telephony/SignalStrength.java b/telephony/java/android/telephony/SignalStrength.java
+index 896c472..1909a9f 100644
+--- a/telephony/java/android/telephony/SignalStrength.java
++++ b/telephony/java/android/telephony/SignalStrength.java
+@@ -423,7 +423,7 @@ public class SignalStrength implements Parcelable {
+      * 27.007 8.5
+      */
+     public int getGsmSignalStrength() {
+-        return this.mGsmSignalStrength;
++        return (0xFFFFFF00 & this.mGsmSignalStrength) / 85;
+     }
+ 
+     /**
+-- 
+1.9.1
