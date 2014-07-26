@@ -1,0 +1,46 @@
+From aa97c8a6915b06f6839947d9ad8dd2822e0e0174 Mon Sep 17 00:00:00 2001
+From: k2wl <k2wl@github.com>
+Date: Sat, 26 Jul 2014 05:51:45 +0530
+Subject: [PATCH] MSIM: Use DDS data sub if no sub is passed
+
+On a multi-sim device, getDataNetworkType will return data
+radio technology value of designated data subscription(DDS).
+
+Change-Id: I99a5059d16f9702584d2c7f7a43834853bcae157
+Signed-off-by: k2wl <k2wl@github.com>
+---
+ src/com/android/phone/MSimPhoneInterfaceManager.java | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/com/android/phone/MSimPhoneInterfaceManager.java b/src/com/android/phone/MSimPhoneInterfaceManager.java
+index 4138fc0..543918a 100644
+--- a/src/com/android/phone/MSimPhoneInterfaceManager.java
++++ b/src/com/android/phone/MSimPhoneInterfaceManager.java
+@@ -888,21 +888,21 @@ public class MSimPhoneInterfaceManager extends ITelephonyMSim.Stub {
+      * Returns the network type
+      */
+     public int getNetworkType() {
+-        return getDataNetworkType(getDefaultSubscription());
++        return getDataNetworkType(getPreferredDataSubscription());
+     }
+ 
+     /**
+      * Returns the network type for a subscription
+      */
+     public int getNetworkType(int subscription) {
+-        return getPhone(subscription).getServiceState().getDataNetworkType();
++        return getDataNetworkType(subscription);
+     }
+ 
+     /**
+      * Returns the data network type
+      */
+     public int getDataNetworkType() {
+-        return getDataNetworkType(getDefaultSubscription());
++        return getDataNetworkType(getPreferredDataSubscription());
+     }
+ 
+     /**
+-- 
+1.9.1
+
