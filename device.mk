@@ -26,4 +26,5 @@ PRODUCT_COPY_FILES += \
     
 # Operator name
 PRODUCT_COPY_FILES += \
-    device/samsung/serranodsdd/plmn_se13.bin:system/etc/plmn_se13.bin
+    device/samsung/serranodsdd/plmn_se13.bin:system/etc/plmn_se13.bin \
+    device/samsung/serranodsdd/plmn_delta.bin:system/etc/plmn_delta.bin \
