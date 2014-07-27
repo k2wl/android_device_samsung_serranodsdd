@@ -1,0 +1,49 @@
+From c95788de2e633693dfa5f749f9c3748276e065dd Mon Sep 17 00:00:00 2001
+From: k2wl <k2wl@github.com>
+Date: Sun, 27 Jul 2014 16:50:42 +0530
+Subject: [PATCH] Add support for ADN loaded after multimode card changed mode.
+
+Notify subscription registrants when app state is ready after sub actived.
+The created phone can initialize the subscription data normally.
+
+this is from CAF
+From 05e12650f66249b7091ab2fe22a961d0a086277a Mon Sep 17 00:00:00 2001
+From: kaiyiz <kaiyiz@codeaurora.org>
+Date: Wed, 11 Dec 2013 16:15:04 +0800
+CRs-Fixed: 580227
+
+Change-Id: I7acea9d198e35cfe650016530b04ff1b0adb7088
+Signed-off-by: k2wl <k2wl@github.com>
+---
+ .../src/com/codeaurora/telephony/msim/SubscriptionManager.java    | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/frameworks/src/com/codeaurora/telephony/msim/SubscriptionManager.java b/frameworks/src/com/codeaurora/telephony/msim/SubscriptionManager.java
+index dec11cb..a4e749b 100644
+--- a/frameworks/src/com/codeaurora/telephony/msim/SubscriptionManager.java
++++ b/frameworks/src/com/codeaurora/telephony/msim/SubscriptionManager.java
+@@ -1685,6 +1685,10 @@ public class SubscriptionManager extends Handler {
+         Registrant r = new Registrant (h, what, obj);
+         synchronized (mSubDeactivatedRegistrants[subId]) {
+             mSubDeactivatedRegistrants[subId].add(r);
++
++            if (getCurrentSubscription(subId).subStatus == SubscriptionStatus.SUB_DEACTIVATED) {
++                r.notifyRegistrant();
++            }
+         }
+     }
+ 
+@@ -1718,6 +1722,10 @@ public class SubscriptionManager extends Handler {
+         Registrant r = new Registrant (h, what, obj);
+         synchronized (mSubActivatedRegistrants[subId]) {
+             mSubActivatedRegistrants[subId].add(r);
++
++            if (getCurrentSubscription(subId).subStatus == SubscriptionStatus.SUB_ACTIVATED) {
++                r.notifyRegistrant();
++            }
+         }
+     }
+ 
+-- 
+1.9.1
+
