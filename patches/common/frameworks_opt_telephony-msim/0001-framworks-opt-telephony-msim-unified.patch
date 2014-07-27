@@ -1,0 +1,184 @@
+From 67131edd1adbbde203b85206ff62d6e3132f87c9 Mon Sep 17 00:00:00 2001
+From: k2wl <k2wl@github.com>
+Date: Sun, 27 Jul 2014 19:53:19 +0530
+Subject: [PATCH] Fix SIM activation issue for single sim during APM toggle and
+ Add support for ADN loaded after multimode card changed mode.
+
+Change-Id: Ia8dce25b82204af781f6c6feddd174bee08a20d7
+Signed-off-by: k2wl <k2wl@github.com>
+---
+ .../telephony/msim/CardSubscriptionManager.java    | 46 ++++++++++++++++++++--
+ .../telephony/msim/MSimUiccController.java         |  1 +
+ .../telephony/msim/SubscriptionManager.java        | 23 ++++++++---
+ 3 files changed, 62 insertions(+), 8 deletions(-)
+
+diff --git a/frameworks/src/com/codeaurora/telephony/msim/CardSubscriptionManager.java b/frameworks/src/com/codeaurora/telephony/msim/CardSubscriptionManager.java
+index a9bd10f..a78a2bf 100644
+--- a/frameworks/src/com/codeaurora/telephony/msim/CardSubscriptionManager.java
++++ b/frameworks/src/com/codeaurora/telephony/msim/CardSubscriptionManager.java
+@@ -52,6 +52,8 @@ import android.os.Handler;
+ import android.os.Message;
+ import android.os.Registrant;
+ import android.os.RegistrantList;
++import android.os.SystemProperties;
++import android.provider.Settings;
+ import android.telephony.MSimTelephonyManager;
+ import android.telephony.Rlog;
+ 
+@@ -167,6 +169,12 @@ public class CardSubscriptionManager extends Handler {
+     private ArrayList<CardInfo> mUiccCardList =
+             new ArrayList<CardInfo>(mNumPhones);
+     private boolean mAllCardsInfoAvailable = false;
++    private Context mContext;
++
++    // If persist.radio.apm_sim_not_pwdn = 1, sim will NOT be powered down during APM ON.
++    private static final String APM_SIM_NOT_PWDN_PROPERTY = "persist.radio.apm_sim_not_pwdn";
++    private static final boolean APM_SIM_NOT_PWDN = (SystemProperties.getInt(
++            APM_SIM_NOT_PWDN_PROPERTY, 0) == 1);
+ 
+     //***** Class Methods
+     public static CardSubscriptionManager getInstance(Context context, MSimUiccController uiccMgr,
+@@ -186,7 +194,8 @@ public class CardSubscriptionManager extends Handler {
+     private CardSubscriptionManager(Context context, MSimUiccController uiccManager,
+             CommandsInterface[] ci) {
+         logd("Constructor - Enter");
+-
++        
++        mContext = context;
+         mCi = ci;
+         mUiccController = uiccManager;
+ 
+@@ -572,7 +581,8 @@ public class CardSubscriptionManager extends Handler {
+         UiccCard uiccCard = null;
+         boolean cardRemoved = false;
+         boolean cardInserted = false;
+-
++        boolean isApmSimPwdn = false;
++       
+         if (cardInfo != null) {
+             uiccCard = cardInfo.getUiccCard();
+         }
+@@ -680,7 +690,19 @@ public class CardSubscriptionManager extends Handler {
+             notifyCardInfoAvailable(cardIndex);
+         }
+         if (cardRemoved){
+-            notifyCardInfoNotAvailable(cardIndex, CardUnavailableReason.REASON_CARD_REMOVED);
++            isApmSimPwdn = isApmSimPwrDown(cardIndex);
++            logd("onUpdateUiccStatus(): Card removed event. Is APM sim power down = "
++                    + isApmSimPwdn);
++            CardUnavailableReason cardRemovedReason = CardUnavailableReason.REASON_CARD_REMOVED;
++            if (isApmSimPwdn) {
++                cardRemovedReason = CardUnavailableReason.REASON_APM_SIM_POWER_DOWN;
++                mAllCardsInfoAvailable = false;
++                //Reset card info so that card state will remain invalid till next get card status
++                resetCardInfo(cardIndex);
++                //As we are resetting cardInfo it is as good as sub is deactivated.
++                mSubActivated[cardIndex] = false;
++            }
++            notifyCardInfoNotAvailable(cardIndex, cardRemovedReason);
+         }
+ 
+         if (cardRemoved || cardInserted) {
+@@ -841,6 +863,24 @@ public class CardSubscriptionManager extends Handler {
+         }
+         return true;
+     }
++    
++    /**
++     * Checks if card is powered down due to APM on.
++     */
++    /*package*/ boolean isApmSimPwrDown(int cardIndex) {
++        boolean isRadioOn = true;
++        if (cardIndex >= 0 && cardIndex < mNumPhones) {
++            isRadioOn = mCi[cardIndex].getRadioState().isOn();
++        }
++        // If airplane mode setting is on or radio is off and sim not power down
++        // property is not set.
++        boolean isApmSimPwdn = !APM_SIM_NOT_PWDN &&
++                ((Settings.Global.getInt(mContext.getContentResolver(),
++                Settings.Global.AIRPLANE_MODE_ON, 0) == 1) || !isRadioOn);
++        logd("isShutdownOrApmSimPwrDown: isRadioOn[" + cardIndex + "] = " + isRadioOn
++                + " isApmSimPwdn = " + isApmSimPwdn);
++        return isApmSimPwdn;
++    }
+ 
+     private void logd(String string) {
+         Rlog.d(LOG_TAG, string);
+diff --git a/frameworks/src/com/codeaurora/telephony/msim/MSimUiccController.java b/frameworks/src/com/codeaurora/telephony/msim/MSimUiccController.java
+index 8c163ae..6bac98f 100644
+--- a/frameworks/src/com/codeaurora/telephony/msim/MSimUiccController.java
++++ b/frameworks/src/com/codeaurora/telephony/msim/MSimUiccController.java
+@@ -158,6 +158,7 @@ public class MSimUiccController extends UiccController {
+             mCis[i].registerForIccStatusChanged(this, EVENT_ICC_STATUS_CHANGED, index);
+             // TODO remove this once modem correctly notifies the unsols
+             mCis[i].registerForAvailable(this, EVENT_ICC_STATUS_CHANGED, index);
++            mCis[i].registerForOn(this, EVENT_ICC_STATUS_CHANGED, index);
+             mCis[i].registerForNotAvailable(this, EVENT_RADIO_UNAVAILABLE, index);
+         }
+     }
+diff --git a/frameworks/src/com/codeaurora/telephony/msim/SubscriptionManager.java b/frameworks/src/com/codeaurora/telephony/msim/SubscriptionManager.java
+index 9ccc2a2..a4e749b 100644
+--- a/frameworks/src/com/codeaurora/telephony/msim/SubscriptionManager.java
++++ b/frameworks/src/com/codeaurora/telephony/msim/SubscriptionManager.java
+@@ -920,9 +920,10 @@ public class SubscriptionManager extends Handler {
+                 // should not update sub preferences, instead wait for the activations to complete.
+                 // This can happen when user changes the subscription app within the same sub.
+                 // For ex: CSIM->Global, Global->CSIM etc.
+-                if (mSetSubscriptionInProgress && isAnyPendingActivateRequest(i)) {
+-                    logd("updateSubPreferences: Sub" + i
+-                            + " has pending activation reqs. Do not update sub prefs now.");
++                if ((mSetSubscriptionInProgress && isAnyPendingActivateRequest(i)) ||
++                        mCardSubMgr.isApmSimPwrDown(i)) {
++                    logd("updateSubPreferences: Sub" + i + " has pending activation reqs or is in"
++                           + "APM sim powerdown. Do not update sub prefs now.");
+                     return;
+                 }
+             }
+@@ -1241,16 +1242,20 @@ public class SubscriptionManager extends Handler {
+         // Reset the current subscription and notify the subscriptions deactivated.
+         if (reason == CardUnavailableReason.REASON_RADIO_UNAVAILABLE
+                 || reason == CardUnavailableReason.REASON_SIM_REFRESH_RESET
++                || reason == CardUnavailableReason.REASON_APM_SIM_POWER_DOWN
+                 || (getCurrentSubscriptionReadiness(sub) == false
+                 && reason == CardUnavailableReason.REASON_CARD_REMOVED)) {
+             // Card has been removed from slot - cardIndex.
+             // Mark the active subscription from this card as de-activated!!
+             resetCurrentSubscription(sub);
+-            updateSubPreferences();
++            if (reason == CardUnavailableReason.REASON_CARD_REMOVED) {
++                updateSubPreferences();
++            }
+             notifySubscriptionDeactivated(sub.ordinal());
+         }
+ 
+-        if (reason == CardUnavailableReason.REASON_RADIO_UNAVAILABLE) {
++        if (reason == CardUnavailableReason.REASON_RADIO_UNAVAILABLE
++                || reason == CardUnavailableReason.REASON_APM_SIM_POWER_DOWN) {
+             mAllCardsStatusAvailable = false;
+         }
+     }
+@@ -1680,6 +1685,10 @@ public class SubscriptionManager extends Handler {
+         Registrant r = new Registrant (h, what, obj);
+         synchronized (mSubDeactivatedRegistrants[subId]) {
+             mSubDeactivatedRegistrants[subId].add(r);
++
++            if (getCurrentSubscription(subId).subStatus == SubscriptionStatus.SUB_DEACTIVATED) {
++                r.notifyRegistrant();
++            }
+         }
+     }
+ 
+@@ -1713,6 +1722,10 @@ public class SubscriptionManager extends Handler {
+         Registrant r = new Registrant (h, what, obj);
+         synchronized (mSubActivatedRegistrants[subId]) {
+             mSubActivatedRegistrants[subId].add(r);
++
++            if (getCurrentSubscription(subId).subStatus == SubscriptionStatus.SUB_ACTIVATED) {
++                r.notifyRegistrant();
++            }
+         }
+     }
+ 
+-- 
+1.9.1
+
