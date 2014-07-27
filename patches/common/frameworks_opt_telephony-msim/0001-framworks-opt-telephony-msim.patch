@@ -4,8 +4,7 @@ Date: Sat, 26 Jul 2014 05:32:43 +0530
 Subject: [PATCH]  Fix SIM activation issue for single sim during APM toggle.
 Issue: After APM toggle with single sim inserted, isAllCardsInfoAvailable() in
 SubscriptionManager retruns false and hence sim activation is blocked.
-Fix:
-A new reason REASON_APM_SIM_POWER_DOWN is added for card absent
+Fix: A new reason REASON_APM_SIM_POWER_DOWN is added for card absent
 event due to card powering down in airplane mode.
 Check APM sim power down condition when card removed event is received
 in CardSubscriptionManager and reset card info and mAllCardsInfoAvailable
