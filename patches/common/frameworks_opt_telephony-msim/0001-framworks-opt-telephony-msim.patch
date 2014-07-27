@@ -1,11 +1,12 @@
-From ab1a51c4d1282b364d66908667517a87202227b7 Mon Sep 17 00:00:00 2001
+From 313476fc0f08a34ea3f888834e5b7262f7b53afc Mon Sep 17 00:00:00 2001
 From: k2wl <k2wl@github.com>
-Date: Sat, 26 Jul 2014 05:32:43 +0530
-Subject: [PATCH]  Fix SIM activation issue for single sim during APM toggle.
-Issue: 
+Date: Sun, 27 Jul 2014 19:20:01 +0530
+Subject: [PATCH] Fix SIM activation issue for single sim during APM toggle.
+
+Issue:
 After APM toggle with single sim inserted, isAllCardsInfoAvailable() in
 SubscriptionManager retruns false and hence sim activation is blocked.
-Fix: 
+Fix:
 A new reason REASON_APM_SIM_POWER_DOWN is added for card absent
 event due to card powering down in airplane mode.
 Check APM sim power down condition when card removed event is received
@@ -14,17 +15,22 @@ so that after APM off, all cards available event is notified.
 Query card status on radio power ON event in MSimUiccController.
 Update sub preferences only for CARD_REMOVED CardUnavailable reason.
 
+This patch is from CAF
+From f086e11c0a39fd6bb478337d35d450df2af36def Mon Sep 17 00:00:00 2001
+From: Muhammed Siju <msiju@codeaurora.org>
+Date: Thu, 22 May 2014 16:31:46 +0530
+
 Change-Id: I9270d933934f8bb8ea31cbc1b055b36d3d281c53
 CRs-Fixed: 661325
 Signed-off-by: k2wl <k2wl@github.com>
 ---
- .../telephony/msim/CardSubscriptionManager.java    | 43 +++++++++++++++++++++-
+ .../telephony/msim/CardSubscriptionManager.java    | 44 +++++++++++++++++++++-
  .../telephony/msim/MSimUiccController.java         |  1 +
  .../telephony/msim/SubscriptionManager.java        | 15 +++++---
- 3 files changed, 53 insertions(+), 6 deletions(-)
+ 3 files changed, 53 insertions(+), 7 deletions(-)
 
 diff --git a/frameworks/src/com/codeaurora/telephony/msim/CardSubscriptionManager.java b/frameworks/src/com/codeaurora/telephony/msim/CardSubscriptionManager.java
-index a9bd10f..7523b38 100644
+index a9bd10f..123c33f 100644
 --- a/frameworks/src/com/codeaurora/telephony/msim/CardSubscriptionManager.java
 +++ b/frameworks/src/com/codeaurora/telephony/msim/CardSubscriptionManager.java
 @@ -52,6 +52,8 @@ import android.os.Handler;
@@ -36,20 +42,19 @@ index a9bd10f..7523b38 100644
  import android.telephony.MSimTelephonyManager;
  import android.telephony.Rlog;
  
-@@ -167,7 +169,13 @@ public class CardSubscriptionManager extends Handler {
+@@ -167,6 +169,12 @@ public class CardSubscriptionManager extends Handler {
      private ArrayList<CardInfo> mUiccCardList =
              new ArrayList<CardInfo>(mNumPhones);
      private boolean mAllCardsInfoAvailable = false;
 +    private Context mContext;
- 
++
 +    // If persist.radio.apm_sim_not_pwdn = 1, sim will NOT be powered down during APM ON.
 +    private static final String APM_SIM_NOT_PWDN_PROPERTY = "persist.radio.apm_sim_not_pwdn";
 +    private static final boolean APM_SIM_NOT_PWDN = (SystemProperties.getInt(
 +            APM_SIM_NOT_PWDN_PROPERTY, 0) == 1);
-+ 
+ 
      //***** Class Methods
      public static CardSubscriptionManager getInstance(Context context, MSimUiccController uiccMgr,
-             CommandsInterface[] ci) {
 @@ -187,6 +195,7 @@ public class CardSubscriptionManager extends Handler {
              CommandsInterface[] ci) {
          logd("Constructor - Enter");
@@ -58,19 +63,19 @@ index a9bd10f..7523b38 100644
          mCi = ci;
          mUiccController = uiccManager;
  
-@@ -572,6 +581,7 @@ public class CardSubscriptionManager extends Handler {
+@@ -572,7 +581,8 @@ public class CardSubscriptionManager extends Handler {
          UiccCard uiccCard = null;
          boolean cardRemoved = false;
          boolean cardInserted = false;
+-
 +        boolean isApmSimPwdn = false;
- 
++        
          if (cardInfo != null) {
              uiccCard = cardInfo.getUiccCard();
-@@ -679,8 +689,21 @@ public class CardSubscriptionManager extends Handler {
-         if (cardInserted){
+         }
+@@ -680,7 +690,19 @@ public class CardSubscriptionManager extends Handler {
              notifyCardInfoAvailable(cardIndex);
          }
-+        
          if (cardRemoved){
 -            notifyCardInfoNotAvailable(cardIndex, CardUnavailableReason.REASON_CARD_REMOVED);
 +            isApmSimPwdn = isApmSimPwrDown(cardIndex);
@@ -89,10 +94,11 @@ index a9bd10f..7523b38 100644
          }
  
          if (cardRemoved || cardInserted) {
-@@ -842,6 +865,24 @@ public class CardSubscriptionManager extends Handler {
+@@ -841,6 +863,24 @@ public class CardSubscriptionManager extends Handler {
+         }
          return true;
      }
- 
++    
 +    /**
 +     * Checks if card is powered down due to APM on.
 +     */
@@ -110,10 +116,9 @@ index a9bd10f..7523b38 100644
 +                + " isApmSimPwdn = " + isApmSimPwdn);
 +        return isApmSimPwdn;
 +    }
-+
+ 
      private void logd(String string) {
          Rlog.d(LOG_TAG, string);
-     }
 diff --git a/frameworks/src/com/codeaurora/telephony/msim/MSimUiccController.java b/frameworks/src/com/codeaurora/telephony/msim/MSimUiccController.java
 index 8c163ae..6bac98f 100644
 --- a/frameworks/src/com/codeaurora/telephony/msim/MSimUiccController.java
