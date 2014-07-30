@@ -1,1 +1,1 @@
-add_lunch_combo cm_serranodsdd-userdebug
+add_lunch_combo mk_serranodsdd-userdebug
