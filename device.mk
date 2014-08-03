@@ -28,3 +28,8 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     device/samsung/serranodsdd/plmn_se13.bin:system/etc/plmn_se13.bin \
     device/samsung/serranodsdd/plmn_delta.bin:system/etc/plmn_delta.bin \
+    
+#common build.props
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.product.locale.language=en \
+    ro.product.locale.region=US \
