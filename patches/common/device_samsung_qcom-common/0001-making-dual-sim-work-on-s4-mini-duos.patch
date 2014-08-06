@@ -1,0 +1,26 @@
+From ce9b332a1e553bcf8eda346887aca590a887b5e8 Mon Sep 17 00:00:00 2001
+From: k2wl <k2wl@github.com>
+Date: Wed, 6 Aug 2014 22:22:49 +0530
+Subject: [PATCH] making dual sim work on s4 mini duos
+
+Change-Id: Id72036cc0d6c990fc2913ced384b9e85e5b6bd42
+Signed-off-by: k2wl <k2wl@github.com>
+---
+ qcom-common.mk | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/qcom-common.mk b/qcom-common.mk
+index 12f426f..5bf5f9c 100644
+--- a/qcom-common.mk
++++ b/qcom-common.mk
+@@ -28,7 +28,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
+ 
+ PRODUCT_PROPERTY_OVERRIDES += \
+     ro.telephony.call_ring.multiple=0 \
+-    ro.telephony.ril_class=SamsungQualcommRIL
+ 
+ # Charger
+ PRODUCT_PACKAGES += \
+-- 
+1.9.1
+
