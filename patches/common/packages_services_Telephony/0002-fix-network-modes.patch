@@ -1,14 +1,14 @@
-From 03983c3652ee44e89b8c337fb8f116c9e3389c74 Mon Sep 17 00:00:00 2001
+From 6867ea40e7ddd0a7b1f22ec435554584007f9626 Mon Sep 17 00:00:00 2001
 From: k2wl <k2wl@github.com>
-Date: Thu, 7 Aug 2014 20:50:29 +0530
-Subject: [PATCH] fix network modes
+Date: Thu, 7 Aug 2014 21:00:22 +0530
+Subject: [PATCH] add network mode fix
 
-Change-Id: I1a67d06f99d41836adffa998c7815d4678d89d75
+Change-Id: I47e73980bda3bf78393595e11b8ed0b57b98063a
 Signed-off-by: k2wl <k2wl@github.com>
 ---
  res/values/cm_arrays.xml | 19 -------------------
- res/values/strings.xml   | 37 -------------------------------------
- 2 files changed, 56 deletions(-)
+ res/values/strings.xml   | 38 --------------------------------------
+ 2 files changed, 57 deletions(-)
 
 diff --git a/res/values/cm_arrays.xml b/res/values/cm_arrays.xml
 index 7d02871..02f2ee1 100644
@@ -41,10 +41,10 @@ index 7d02871..02f2ee1 100644
          <item>@string/preferred_network_mode_wcdma_only</item>
          <item>@string/preferred_network_mode_gsm_only</item>
 diff --git a/res/values/strings.xml b/res/values/strings.xml
-index 65ee972..10f05cd 100644
+index 65ee972..fed6fe3 100644
 --- a/res/values/strings.xml
 +++ b/res/values/strings.xml
-@@ -452,49 +452,12 @@
+@@ -452,50 +452,12 @@
  
  
      <string-array name="preferred_network_mode_choices">
@@ -91,9 +91,10 @@ index 65ee972..10f05cd 100644
 -        <item>"7"</item>
 -        <item>"6"</item>
 -        <item>"5"</item>
-         <item>"4"</item>
+-        <item>"4"</item>
          <item>"3"</item>
          <item>"2"</item>
+         <item>"1"</item>
 -- 
 1.9.1
 
