@@ -1,0 +1,83 @@
+From 0ee59315e5b358b5c8d20054f679b9c14dfd0d06 Mon Sep 17 00:00:00 2001
+From: k2wl <k2wl@github.com>
+Date: Sat, 9 Aug 2014 16:12:58 +0530
+Subject: [PATCH] msim fixes
+
+Change-Id: I1eecbfaa3aad5fbdc5026c261e1d0cd45be8e609
+Signed-off-by: k2wl <k2wl@github.com>
+---
+ src/com/android/phone/GsmUmtsOptions.java            | 14 ++------------
+ src/com/android/phone/MSimPhoneInterfaceManager.java |  6 +++---
+ 2 files changed, 5 insertions(+), 15 deletions(-)
+
+diff --git a/src/com/android/phone/GsmUmtsOptions.java b/src/com/android/phone/GsmUmtsOptions.java
+index f7db6ca..76f346d 100644
+--- a/src/com/android/phone/GsmUmtsOptions.java
++++ b/src/com/android/phone/GsmUmtsOptions.java
+@@ -90,11 +90,7 @@ public class GsmUmtsOptions {
+                 mPrefScreen.removePreference(mPrefScreen.findPreference(BUTTON_APN_EXPAND_KEY));
+             }
+             if (!res.getBoolean(R.bool.config_operator_selection_expand)) {
+-                if (mButtonOperatorSelectionExpand != null) {
+-                    mPrefScreen.removePreference(mButtonOperatorSelectionExpand);
+-                    mButtonOperatorSelectionExpand = null;
+-               }
+-            }
++                mPrefScreen.removePreference(mButtonOperatorSelectionExpand);
+         }
+         updateOperatorSelectionVisibility();
+     }
+@@ -102,9 +98,6 @@ public class GsmUmtsOptions {
+     private void updateOperatorSelectionVisibility() {
+         log("updateOperatorSelectionVisibility. mPhone = " + mPhone.getPhoneName());
+         Resources res = mPrefActivity.getResources();
+-        if (mButtonOperatorSelectionExpand == null) {
+-            android.util.Log.e(LOG_TAG, "mButtonOperatorSelectionExpand is null");
+-            return;
+         }
+         if (!mPhone.isManualNetSelAllowed()) {
+             log("Manual network selection not allowed.Disabling Operator Selection menu.");
+@@ -115,10 +108,7 @@ public class GsmUmtsOptions {
+                 mButtonOperatorSelectionExpand.setEnabled(true);
+             } else {
+                 log("[CSP] Disabling Operator Selection menu.");
+-                if (mButtonOperatorSelectionExpand != null) {
+-                    mPrefScreen.removePreference(mButtonOperatorSelectionExpand);
+-                    mButtonOperatorSelectionExpand = null;
+-                }
++                mPrefScreen.removePreference(mButtonOperatorSelectionExpand);
+             }
+         }
+     }
+diff --git a/src/com/android/phone/MSimPhoneInterfaceManager.java b/src/com/android/phone/MSimPhoneInterfaceManager.java
+index 4138fc0..63efb5e 100644
+--- a/src/com/android/phone/MSimPhoneInterfaceManager.java
++++ b/src/com/android/phone/MSimPhoneInterfaceManager.java
+@@ -888,21 +888,21 @@ public class MSimPhoneInterfaceManager extends ITelephonyMSim.Stub {
+      * Returns the network type
+      */
+     public int getNetworkType() {
+-        return getDataNetworkType(getDefaultSubscription());
++        return getDataNetworkType(getPreferredDataSubscription());
+     }
+ 
+     /**
+      * Returns the network type for a subscription
+      */
+     public int getNetworkType(int subscription) {
+-        return getPhone(subscription).getServiceState().getDataNetworkType();
++        return getDataNetworkType(subscription)
+     }
+ 
+     /**
+      * Returns the data network type
+      */
+     public int getDataNetworkType() {
+-        return getDataNetworkType(getDefaultSubscription());
++        return getDataNetworkType(getPreferredDataSubscription());
+     }
+ 
+     /**
+-- 
+1.9.1
+

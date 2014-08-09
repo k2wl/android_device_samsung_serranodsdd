@@ -1,0 +1,373 @@
+From f96cd3ff3a2a37636a8a2a1e9b9b18340c772164 Mon Sep 17 00:00:00 2001
+From: k2wl <k2wl@github.com>
+Date: Sat, 9 Aug 2014 16:15:16 +0530
+Subject: [PATCH] msim fixes
+
+Change-Id: I3e5cd8fd426098ce9ec89ea781bdb576675732dd
+Signed-off-by: k2wl <k2wl@github.com>
+---
+ .../telephony/msim/CardSubscriptionManager.java    | 71 ++++++++++++++++++++--
+ .../telephony/msim/MSimCDMALTEPhone.java           |  1 -
+ .../codeaurora/telephony/msim/MSimGSMPhone.java    |  1 -
+ .../telephony/msim/MSimUiccController.java         |  1 -
+ .../telephony/msim/SubscriptionManager.java        | 60 +++++++++++++++++-
+ 5 files changed, 124 insertions(+), 10 deletions(-)
+
+diff --git a/frameworks/src/com/codeaurora/telephony/msim/CardSubscriptionManager.java b/frameworks/src/com/codeaurora/telephony/msim/CardSubscriptionManager.java
+index 9357c83..ac00600 100644
+--- a/frameworks/src/com/codeaurora/telephony/msim/CardSubscriptionManager.java
++++ b/frameworks/src/com/codeaurora/telephony/msim/CardSubscriptionManager.java
+@@ -55,6 +55,8 @@ import android.os.Registrant;
+ import android.os.RegistrantList;
+ import android.os.SystemProperties;
+ import android.provider.Settings;
++import android.os.SystemProperties;
++import android.provider.Settings;
+ import android.telephony.MSimTelephonyManager;
+ import android.telephony.Rlog;
+ 
+@@ -143,11 +145,13 @@ public class CardSubscriptionManager extends Handler {
+ 
+ 
+     //***** Events
+-    private static final int EVENT_RADIO_NOT_AVAILABLE = 1;
++    private static final int EVENT_RADIO_OFF_OR_NOT_AVAILABLE = 0;
++    private static final int EVENT_RADIO_ON = 1;
+     private static final int EVENT_ICC_CHANGED = 2;
+     private static final int EVENT_GET_ICCID_DONE = 3;
+     private static final int EVENT_UPDATE_UICC_STATUS = 4;
+     private static final int EVENT_SIM_REFRESH = 5;
++    private static final int EVENT_RADIO_NOT_AVAILABLE = 6;
+ 
+     //***** Class Variables
+     private static CardSubscriptionManager sCardSubscriptionManager;
+@@ -156,6 +160,7 @@ public class CardSubscriptionManager extends Handler {
+     private CommandsInterface[] mCi;
+     private MSimUiccController mUiccController;
+     private int mNumPhones = MSimTelephonyManager.getDefault().getPhoneCount();
++    private boolean[] mRadioOn = new boolean[mNumPhones];
+     private boolean[] mSubActivated = new boolean[mNumPhones];
+ 
+     private int mUpdateUiccStatusContext = 0;
+@@ -203,10 +208,13 @@ public class CardSubscriptionManager extends Handler {
+         for (int i = 0; i < mCi.length; i++) {
+             // Register for Subscription ready event for both the subscriptions.
+             Integer slot = new Integer(i);
++            mCi[i].registerForOffOrNotAvailable(this, EVENT_RADIO_OFF_OR_NOT_AVAILABLE, slot);
+             mCi[i].registerForNotAvailable(this, EVENT_RADIO_NOT_AVAILABLE, slot);
++            mCi[i].registerForOn(this, EVENT_RADIO_ON, slot);
+ 
+             // Register for SIM Refresh events
+             mCi[i].registerForIccRefresh(this, EVENT_SIM_REFRESH, new Integer(i));
++            mRadioOn[i] = false;
+             mSubActivated[i] = false;
+         }
+ 
+@@ -231,6 +239,16 @@ public class CardSubscriptionManager extends Handler {
+     @Override
+     public void handleMessage(Message msg) {
+         switch(msg.what) {
++            case EVENT_RADIO_OFF_OR_NOT_AVAILABLE:
++                logd("EVENT_RADIO_OFF_OR_NOT_AVAILABLE");
++                processRadioOffOrNotAvailable((AsyncResult)msg.obj);
++                break;
++
++            case EVENT_RADIO_ON:
++                logd("EVENT_RADIO_ON");
++                processRadioOn((AsyncResult)msg.obj);
++                break;
++			
+             case EVENT_RADIO_NOT_AVAILABLE:
+                 logd("EVENT_RADIO_NOT_AVAILABLE");
+                 processRadioNotAvailable((AsyncResult)msg.obj);
+@@ -280,12 +298,35 @@ public class CardSubscriptionManager extends Handler {
+         }
+     }
+ 
++    private void processRadioOffOrNotAvailable(AsyncResult ar) {
++        Integer cardIndex = (Integer)ar.userObj;
++
++        logd("processRadioOffOrNotAvailable on cardIndex = " + cardIndex);
++
++        if (cardIndex >= 0 && cardIndex < mRadioOn.length) {
++            mRadioOn[cardIndex] = false;
++            //If sub is deactivated then reset card info.
++            if (mSubActivated[cardIndex] == false) {
++                resetCardInfo(cardIndex);
++                //CardInfo is not valid. Inform others that card info not available.
++                notifyCardInfoNotAvailable(cardIndex,
++                        CardUnavailableReason.REASON_RADIO_UNAVAILABLE);
++                // Reset the flag card info available to false, so that
++                // next time it notifies all cards info available.
++                mAllCardsInfoAvailable = false;
++            }
++        } else {
++            logd("Invalid Index!!!");
++        }
++    }
++
+     private void processRadioNotAvailable(AsyncResult ar) {
+         Integer cardIndex = (Integer)ar.userObj;
+ 
+         logd("processRadioNotAvailable on cardIndex = " + cardIndex);
+ 
+-        if (cardIndex >= 0 && cardIndex < mNumPhones) {
++        if (cardIndex >= 0 && cardIndex < mRadioOn.length) {
++            mRadioOn[cardIndex] = false;
+             //Radio unavailable comes in case of rild crash or Modem SSR.
+             //reset card info in case of radio Unavailable in order to send SET_UICC later.
+             resetCardInfo(cardIndex);
+@@ -301,6 +342,18 @@ public class CardSubscriptionManager extends Handler {
+         }
+     }
+ 
++    private void processRadioOn(AsyncResult ar) {
++        Integer cardIndex = (Integer)ar.userObj;
++
++        logd("processRadioOn on cardIndex = " + cardIndex);
++
++        if (cardIndex >= 0 && cardIndex < mRadioOn.length) {
++            mRadioOn[cardIndex] = true;
++        } else {
++            logd("Invalid Index!!!");
++        }
++    }
++
+     /**
+      * Process the ICC_CHANGED notification.
+      */
+@@ -312,6 +365,10 @@ public class CardSubscriptionManager extends Handler {
+ 
+         if ((ar.exception == null) && (ar.result != null)) {
+             Integer cardIndex = (Integer) ar.result;
++            if (!mRadioOn[cardIndex]) {
++                logd("handleIccChanged: radio not available - EXIT");
++                return;
++            }
+             UiccCard uiccCard = mUiccController.getUiccCards()[cardIndex];
+             UiccCard card = mUiccCardList.get(cardIndex).getUiccCard();
+ 
+@@ -451,6 +508,11 @@ public class CardSubscriptionManager extends Handler {
+ 
+         logd("handleGetIccIdDone: cardIndex = " + cardIndex);
+ 
++        if (!mRadioOn[cardIndex]) {
++            logd("handleGetIccIdDone: radio not available - EXIT");
++            return;
++        }
++
+         String iccId = null;
+ 
+         if (ar.exception != null) {
+@@ -588,7 +650,8 @@ public class CardSubscriptionManager extends Handler {
+             uiccCard = cardInfo.getUiccCard();
+         }
+ 
+-        if (uiccCard == null) {
++        if (uiccCard == null || mRadioOn[cardIndex] == false) {
++            logd("onUpdateUiccStatus(): mRadioOn[" + cardIndex + "] = " + mRadioOn[cardIndex]);
+             logd("onUpdateUiccStatus(): NO Card!!!!! at index : " + cardIndex);
+             if (mCardSubData[cardIndex] != null) {
+                 // Card is removed.
+@@ -713,7 +776,7 @@ public class CardSubscriptionManager extends Handler {
+ 
+         // Required to notify only once!!!
+         // Notify if all card info is available.
+-        if (isValidCards() && !mAllCardsInfoAvailable) {
++        if (isValidCards() && !mAllCardsInfoAvailable && mRadioOn[cardIndex]) {
+             mAllCardsInfoAvailable = true;
+             notifyAllCardsInfoAvailable();
+         }
+diff --git a/frameworks/src/com/codeaurora/telephony/msim/MSimCDMALTEPhone.java b/frameworks/src/com/codeaurora/telephony/msim/MSimCDMALTEPhone.java
+index 1e59103..4ef8c59 100644
+--- a/frameworks/src/com/codeaurora/telephony/msim/MSimCDMALTEPhone.java
++++ b/frameworks/src/com/codeaurora/telephony/msim/MSimCDMALTEPhone.java
+@@ -99,7 +99,6 @@ public class MSimCDMALTEPhone extends CDMALTEPhone {
+                 this, EVENT_SUBSCRIPTION_ACTIVATED, null);
+         subMgr.registerForSubscriptionDeactivated(mSubscription,
+                 this, EVENT_SUBSCRIPTION_DEACTIVATED, null);
+-        mSubscriptionData = subMgr.getCurrentSubscription(mSubscription);
+     }
+ 
+     @Override
+diff --git a/frameworks/src/com/codeaurora/telephony/msim/MSimGSMPhone.java b/frameworks/src/com/codeaurora/telephony/msim/MSimGSMPhone.java
+index c968593..81c21f3 100644
+--- a/frameworks/src/com/codeaurora/telephony/msim/MSimGSMPhone.java
++++ b/frameworks/src/com/codeaurora/telephony/msim/MSimGSMPhone.java
+@@ -85,7 +85,6 @@ public class MSimGSMPhone extends GSMPhone {
+                 this, EVENT_SUBSCRIPTION_ACTIVATED, null);
+         subMgr.registerForSubscriptionDeactivated(mSubscription,
+                 this, EVENT_SUBSCRIPTION_DEACTIVATED, null);
+-        mSubscriptionData = subMgr.getCurrentSubscription(mSubscription);
+ 
+         setProperties();
+     }
+diff --git a/frameworks/src/com/codeaurora/telephony/msim/MSimUiccController.java b/frameworks/src/com/codeaurora/telephony/msim/MSimUiccController.java
+index 6bac98f..fba03fe 100644
+--- a/frameworks/src/com/codeaurora/telephony/msim/MSimUiccController.java
++++ b/frameworks/src/com/codeaurora/telephony/msim/MSimUiccController.java
+@@ -157,7 +157,6 @@ public class MSimUiccController extends UiccController {
+             Integer index = new Integer(i);
+             mCis[i].registerForIccStatusChanged(this, EVENT_ICC_STATUS_CHANGED, index);
+             // TODO remove this once modem correctly notifies the unsols
+-            mCis[i].registerForAvailable(this, EVENT_ICC_STATUS_CHANGED, index);
+             mCis[i].registerForOn(this, EVENT_ICC_STATUS_CHANGED, index);
+             mCis[i].registerForNotAvailable(this, EVENT_RADIO_UNAVAILABLE, index);
+         }
+diff --git a/frameworks/src/com/codeaurora/telephony/msim/SubscriptionManager.java b/frameworks/src/com/codeaurora/telephony/msim/SubscriptionManager.java
+index 84da678..9d1d072 100644
+--- a/frameworks/src/com/codeaurora/telephony/msim/SubscriptionManager.java
++++ b/frameworks/src/com/codeaurora/telephony/msim/SubscriptionManager.java
+@@ -164,6 +164,7 @@ public class SubscriptionManager extends Handler {
+ 
+     private boolean[] mCardInfoAvailable = new boolean[mNumPhones];
+     private boolean[] mIsNewCard = new boolean[mNumPhones];
++    private boolean[] mRadioOn = new boolean[mNumPhones];
+ 
+     private HashMap<SubscriptionId, Subscription> mActivatePending;
+     private HashMap<SubscriptionId, Subscription> mDeactivatePending;
+@@ -272,6 +273,7 @@ public class SubscriptionManager extends Handler {
+ 
+             mCardInfoAvailable[i] = false;
+             mIsNewCard[i] = false;
++            mRadioOn[i] = false;
+         }
+ 
+         mSubDeactivatedRegistrants = new RegistrantList[mNumPhones];
+@@ -323,15 +325,21 @@ public class SubscriptionManager extends Handler {
+                 ar = (AsyncResult)msg.obj;
+                 subId = (Integer)ar.userObj;
+                 logd("EVENT_RADIO_OFF_OR_NOT_AVAILABLE on SUB: " + subId);
+-                mSetSubscriptionInProgress = false;
+-                mSetDdsRequired = true;
++                mRadioOn[subId] = false;
++                if (!isAllRadioOn()) {
++                    mSetSubscriptionInProgress = false;
++                    mSetDdsRequired = true;
++                }
+                 break;
+ 
+             case EVENT_RADIO_ON:
+                 ar = (AsyncResult)msg.obj;
+                 subId = (Integer)ar.userObj;
+                 logd("EVENT_RADIO_ON on SUB: " + subId);
+-                sendDefaultSubsInfo();
++                mRadioOn[subId] = true;
++                if (isAllRadioOn()) {
++                   sendDefaultSubsInfo();
++                }
+                 break;
+ 
+             case EVENT_CARD_INFO_AVAILABLE:
+@@ -581,6 +589,11 @@ public class SubscriptionManager extends Handler {
+      * @param ar
+      */
+     private void processCleanupDataConnectionDone(Integer subId) {
++        if (!mRadioOn[subId]) {
++           logd("processCleanupDataConnectionDone: Radio Not Available on subId = " + subId);
++           return;
++        }
++
+         // Cleanup data connection is done!  Start processing the
+         // pending deactivate requests now.
+         mDataActive = false;
+@@ -598,6 +611,11 @@ public class SubscriptionManager extends Handler {
+         boolean isSubReady = mCurrentSubscriptions.get(sub).subReady;
+         logd("processSubscriptionStatusChanged sub = " + subId
+                 + " actStatus = " + actStatus);
++                
++        if (!mRadioOn[subId]) {
++           logd("processSubscriptionStatusChanged: Radio Not Available on subId = " + subId);
++           return;
++        }
+ 
+         if ((isSubReady == true && actStatus == SUB_STATUS_ACTIVATED) ||
+                 (isSubReady == false && actStatus == SUB_STATUS_DEACTIVATED)) {
+@@ -661,6 +679,12 @@ public class SubscriptionManager extends Handler {
+         String cause = null;
+         SubscriptionStatus subStatus = SubscriptionStatus.SUB_INVALID;
+         Subscription currentSub = null;
++        
++        if (!mRadioOn[setSubParam.subId]) {
++           logd("processSetUiccSubscriptionDone: Radio Not Available on subId = "
++                + setSubParam.subId);
++           return;
++        }
+ 
+         if (setSubParam.appType.equals("GLOBAL") &&
+                 (setSubParam.subStatus == SubscriptionStatus.SUB_ACTIVATE)) {
+@@ -1000,6 +1024,11 @@ public class SubscriptionManager extends Handler {
+      * Handles EVENT_ALL_CARDS_INFO_AVAILABLE.
+      */
+     private void processAllCardsInfoAvailable() {
++        if (!isAllRadioOn()) {
++           logd("processAllCardsInfoAvailable: Radio Not Available ");
++           return;
++        }
++
+         int availableCards = 0;
+         mAllCardsStatusAvailable = true;
+ 
+@@ -1028,6 +1057,10 @@ public class SubscriptionManager extends Handler {
+      * Handles EVENT_PROCESS_AVAILABLE_CARDS
+      */
+     private void processAvailableCards() {
++        if (!isAllRadioOn()) {
++           logd("processAvailableCards: Radio Not Available ");
++           return;
++        }
+         if (mSetSubscriptionInProgress) {
+            logd("processAvailableCards: set subscription in progress!!");
+            return;
+@@ -1144,6 +1177,11 @@ public class SubscriptionManager extends Handler {
+     private void processCardInfoAvailable(AsyncResult ar) {
+         Integer cardIndex = (Integer)ar.userObj;
+ 
++        if (!mRadioOn[cardIndex]) {
++           logd("processCardInfoAvailable: Radio Not Available on cardIndex = " + cardIndex);
++           return;
++        }
++
+         mCardInfoAvailable[cardIndex] = true;
+ 
+         logd("processCardInfoAvailable: CARD:" + cardIndex + " is available");
+@@ -1196,6 +1234,14 @@ public class SubscriptionManager extends Handler {
+         mContext.startActivity(setSubscriptionIntent);
+     }
+ 
++    private boolean isAllRadioOn() {
++        boolean result = true;
++        for (boolean radioOn : mRadioOn) {
++            result = result && radioOn;
++        }
++        return result;
++    }
++
+     private boolean isAllCardsInfoAvailable() {
+         boolean result = true;
+         for (boolean available : mCardInfoAvailable) {
+@@ -1686,6 +1732,10 @@ public class SubscriptionManager extends Handler {
+         Registrant r = new Registrant (h, what, obj);
+         synchronized (mSubDeactivatedRegistrants[subId]) {
+             mSubDeactivatedRegistrants[subId].add(r);
++
++            if (getCurrentSubscription(subId).subStatus == SubscriptionStatus.SUB_DEACTIVATED) {
++                r.notifyRegistrant();
++            }
+         }
+     }
+ 
+@@ -1719,6 +1769,10 @@ public class SubscriptionManager extends Handler {
+         Registrant r = new Registrant (h, what, obj);
+         synchronized (mSubActivatedRegistrants[subId]) {
+             mSubActivatedRegistrants[subId].add(r);
++
++            if (getCurrentSubscription(subId).subStatus == SubscriptionStatus.SUB_ACTIVATED) {
++                r.notifyRegistrant();
++            }
+         }
+     }
+ 
+-- 
+1.9.1
+

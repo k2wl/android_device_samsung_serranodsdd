@@ -1,9 +1,9 @@
-From 32c44355374fe4b0948588a1207c63c365c12974 Mon Sep 17 00:00:00 2001
+From 979ff3cf10ca904eb9692359dfd33cc61320a416 Mon Sep 17 00:00:00 2001
 From: k2wl <k2wl@github.com>
-Date: Wed, 6 Aug 2014 22:28:20 +0530
-Subject: [PATCH] fixing RIL for s4 mini duos so that telephony workgit add *
+Date: Sat, 9 Aug 2014 16:17:40 +0530
+Subject: [PATCH] RIL fix for S4mini Duos
 
-Change-Id: I276dac173e240b92aa9644191ea138b1d76fa8f6
+Change-Id: I0e3fac2ce57ef4559e7c52fd16700d56800ae4b1
 Signed-off-by: k2wl <k2wl@github.com>
 ---
  src/java/com/android/internal/telephony/RIL.java | 6 +++---
