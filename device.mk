@@ -28,3 +28,8 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     device/samsung/serranodsdd/plmn_se13.bin:system/etc/plmn_se13.bin \
     device/samsung/serranodsdd/plmn_delta.bin:system/etc/plmn_delta.bin \
+
+# Default.prop overrides to get adb working at boot   
+ADDITIONAL_DEFAULT_PROPERTIES += \
+ro.secure=0 \
+ro.adb.secure=0 \
