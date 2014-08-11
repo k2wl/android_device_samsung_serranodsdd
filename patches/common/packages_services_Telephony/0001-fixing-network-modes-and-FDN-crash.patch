@@ -1,0 +1,178 @@
+From de61d9e28dd1f4e642e00e03acbab9665166ed73 Mon Sep 17 00:00:00 2001
+From: k2wl <k2wl@github.com>
+Date: Fri, 8 Aug 2014 05:48:36 +0530
+Subject: [PATCH] fixing network modes and FDN crash
+
+Change-Id: I69a8f693847a1c8aa12875b20c25de4968bb45f3
+Signed-off-by: k2wl <k2wl@github.com>
+---
+ res/values/cm_arrays.xml                           | 19 -----------
+ res/values/strings.xml                             | 38 ----------------------
+ src/com/android/phone/CallFeaturesSetting.java     | 14 +++++---
+ .../phone/MSimMobileNetworkSubSettings.java        | 27 +++++----------
+ 4 files changed, 18 insertions(+), 80 deletions(-)
+
+diff --git a/res/values/cm_arrays.xml b/res/values/cm_arrays.xml
+index 7d02871..02f2ee1 100644
+--- a/res/values/cm_arrays.xml
++++ b/res/values/cm_arrays.xml
+@@ -16,25 +16,6 @@
+ -->
+ <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+     <string-array name="preferred_network_mode_choices_cm" translatable="false">
+-        <item>@string/preferred_network_mode_td_scdma_lte_cdma_evdo_gsm_wcdma</item>
+-        <item>@string/preferred_network_mode_td_scdma_cdma_evdo_gsm_wcdma</item>
+-        <item>@string/preferred_network_mode_td_scdma_gsm_wcdma_lte</item>
+-        <item>@string/preferred_network_mode_td_scdma_wcdma_lte</item>
+-        <item>@string/preferred_network_mode_td_scdma_gsm_wcdma</item>
+-        <item>@string/preferred_network_mode_td_scdma_gsm_lte</item>
+-        <item>@string/preferred_network_mode_td_scdma_gsm</item>
+-        <item>@string/preferred_network_mode_td_scdma_lte</item>
+-        <item>@string/preferred_network_mode_td_scdma_wcdma</item>
+-        <item>@string/preferred_network_mode_td_scdma_only</item>
+-        <item>@string/preferred_network_mode_lte_wcdma</item>
+-        <item>@string/preferred_network_mode_lte</item>
+-        <item>@string/preferred_network_mode_global</item>
+-        <item>@string/preferred_network_mode_gsm_wcdma_lte</item>
+-        <item>@string/preferred_network_mode_cdma_lte_evdo</item>
+-        <item>@string/preferred_network_mode_cdma_evdo_gsm_wcdma</item>
+-        <item>@string/preferred_network_mode_evdo_only</item>
+-        <item>@string/preferred_network_mode_cdma_without_evdo</item>
+-        <item>@string/preferred_network_mode_cdma_evdo_auto</item>
+         <item>@string/preferred_network_mode_gsm_wcdma_auto</item>
+         <item>@string/preferred_network_mode_wcdma_only</item>
+         <item>@string/preferred_network_mode_gsm_only</item>
+diff --git a/res/values/strings.xml b/res/values/strings.xml
+index 65ee972..fed6fe3 100644
+--- a/res/values/strings.xml
++++ b/res/values/strings.xml
+@@ -452,50 +452,12 @@
+ 
+ 
+     <string-array name="preferred_network_mode_choices">
+-        <item>TD-SCDMA/LTE/GSM/WCDMA/CDMA/EVDO </item>
+-        <item>TD-SCDMA/GSM/WCDMA/CDMA/EVDO </item>
+-        <item>TD-SCDMA/GSM/WCDMA/LTE</item>
+-        <item>TD-SCDMA/WCDMA/LTE</item>
+-        <item>TD-SCDMA/GSM/WCDMA</item>
+-        <item>TD-SCDMA/GSM/LTE</item>
+-        <item>TD-SCDMA/GSM</item>
+-        <item>TD-SCDMA/LTE</item>
+-        <item>TD-SCDMA/WCDMA</item>
+-        <item>TD-SCDMA only</item>
+-        <item>LTE / WCDMA</item>
+-        <item>LTE</item>
+-        <item>Global</item>
+-        <item>GSM/WCDMA/LTE</item>
+-        <item>CDMA + LTE/EvDo</item>
+-        <item>CDMA/EvDo/GSM/WCDMA</item>
+-        <item>EvDo only</item>
+-        <item>CDMA w/o EvDo</item>
+-        <item>CDMA/EvDo auto</item>
+         <item>GSM/WCDMA auto</item>
+         <item>WCDMA only</item>
+         <item>GSM only</item>
+         <item>GSM/WCDMA preferred</item>
+     </string-array>
+     <string-array name="preferred_network_mode_values"  translatable="false">
+-        <item>"22"</item>
+-        <item>"21"</item>
+-        <item>"20"</item>
+-        <item>"19"</item>
+-        <item>"18"</item>
+-        <item>"17"</item>
+-        <item>"16"</item>
+-        <item>"15"</item>
+-        <item>"14"</item>
+-        <item>"13"</item>
+-        <item>"12"</item>
+-        <item>"11"</item>
+-        <item>"10"</item>
+-        <item>"9"</item>
+-        <item>"8"</item>
+-        <item>"7"</item>
+-        <item>"6"</item>
+-        <item>"5"</item>
+-        <item>"4"</item>
+         <item>"3"</item>
+         <item>"2"</item>
+         <item>"1"</item>
+diff --git a/src/com/android/phone/CallFeaturesSetting.java b/src/com/android/phone/CallFeaturesSetting.java
+index 3010e16..639e4c4 100644
+--- a/src/com/android/phone/CallFeaturesSetting.java
++++ b/src/com/android/phone/CallFeaturesSetting.java
+@@ -57,6 +57,7 @@ import android.provider.ContactsContract.CommonDataKinds;
+ import android.provider.MediaStore;
+ import android.provider.Settings;
+ import android.provider.Settings.SettingNotFoundException;
++import android.telephony.MSimTelephonyManager;
+ import android.telephony.PhoneNumberUtils;
+ import android.text.Spannable;
+ import android.text.SpannableString;
+@@ -2517,10 +2518,15 @@ public class CallFeaturesSetting extends PreferenceActivity
+      * This is useful for implementing "HomeAsUp" capability for second-level Settings.
+      */
+     public static void goUpToTopLevelSetting(Activity activity) {
+-        Intent intent = new Intent(activity, CallFeaturesSetting.class);
+-        intent.setAction(Intent.ACTION_MAIN);
+-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+-        activity.startActivity(intent);
++        if (!MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
++            // HACK: This doesn't work on multi-SIM (and we have multiple)
++            //       hierachy (MSimCallFeaturesSetting and MSimCallFeatureSubSetting)
++            //       so let just allow this to act like "back" button
++            Intent intent = new Intent(activity, CallFeaturesSetting.class);
++            intent.setAction(Intent.ACTION_MAIN);
++            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
++            activity.startActivity(intent);
++        }
+         activity.finish();
+     }
+ }
+diff --git a/src/com/android/phone/MSimMobileNetworkSubSettings.java b/src/com/android/phone/MSimMobileNetworkSubSettings.java
+index f54153f..b4244c1 100644
+--- a/src/com/android/phone/MSimMobileNetworkSubSettings.java
++++ b/src/com/android/phone/MSimMobileNetworkSubSettings.java
+@@ -211,31 +211,20 @@ public class MSimMobileNetworkSubSettings extends PreferenceActivity
+         mButtonPreferredNetworkMode = (ListPreference) prefSet.findPreference(
+                 BUTTON_PREFERED_NETWORK_MODE);
+ 
+-        boolean isLteOnCdma = mPhone.getLteOnCdmaMode() == PhoneConstants.LTE_ON_CDMA_TRUE;
+-        if (getResources().getBoolean(R.bool.world_phone) == true) {
+-            // set the listener for the mButtonPreferredNetworkMode list preference so we can issue
+-            // change Preferred Network Mode.
+-            mButtonPreferredNetworkMode.setOnPreferenceChangeListener(this);
++        // set the listener for the mButtonPreferredNetworkMode list preference so we can issue
++        // change Preferred Network Mode.
++        mButtonPreferredNetworkMode.setOnPreferenceChangeListener(this);
+ 
+-            //Get the networkMode from Settings.System and displays it
+-            int settingsNetworkMode = getPreferredNetworkMode();
+-            mButtonPreferredNetworkMode.setValue(Integer.toString(settingsNetworkMode));
++        //Get the networkMode from Settings.System and displays it
++        int settingsNetworkMode = getPreferredNetworkMode();
++        mButtonPreferredNetworkMode.setValue(Integer.toString(settingsNetworkMode));
++
++        if (getResources().getBoolean(R.bool.world_phone) == true) {
+             mCdmaOptions = new CdmaOptions(this, prefSet, mPhone);
+             mGsmUmtsOptions = new GsmUmtsOptions(this, prefSet, mSubscription);
+         } else {
+-            if (!isLteOnCdma) {
+-                prefSet.removePreference(mButtonPreferredNetworkMode);
+-            }
+             int phoneType = mPhone.getPhoneType();
+             if (phoneType == PhoneConstants.PHONE_TYPE_CDMA) {
+-                mCdmaOptions = new CdmaOptions(this, prefSet, mPhone);
+-                if (isLteOnCdma) {
+-                    mButtonPreferredNetworkMode.setOnPreferenceChangeListener(this);
+-
+-                    int settingsNetworkMode = getPreferredNetworkMode();
+-                    mButtonPreferredNetworkMode.setValue(
+-                            Integer.toString(settingsNetworkMode));
+-                }
+ 
+             } else if (phoneType == PhoneConstants.PHONE_TYPE_GSM) {
+                 mGsmUmtsOptions = new GsmUmtsOptions(this, prefSet, mSubscription);
+-- 
+1.9.1
+
