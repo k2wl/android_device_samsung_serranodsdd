@@ -1,0 +1,26 @@
+From 958bd3ad636db9ea5aa053e1c978d04dcb7ad19f Mon Sep 17 00:00:00 2001
+From: k2wl <k2wl@github.com>
+Date: Sat, 9 Aug 2014 16:21:35 +0530
+Subject: [PATCH] remove SamsungQualcommRIL so that s4mini duos ril should work
+
+Change-Id: I9d821e7d90d43bff7e3f65885d28520f02f4ee39
+Signed-off-by: k2wl <k2wl@github.com>
+---
+ qcom-common.mk | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/qcom-common.mk b/qcom-common.mk
+index 12f426f..5bf5f9c 100644
+--- a/qcom-common.mk
++++ b/qcom-common.mk
+@@ -28,7 +28,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
+ 
+ PRODUCT_PROPERTY_OVERRIDES += \
+     ro.telephony.call_ring.multiple=0 \
+-    ro.telephony.ril_class=SamsungQualcommRIL
+ 
+ # Charger
+ PRODUCT_PACKAGES += \
+-- 
+1.9.1
+
