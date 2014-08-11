@@ -34,7 +34,7 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
 ro.secure=0 \
 ro.adb.secure=0 \
 
-# Init scripts
-PRODUCT_PACKAGES += \
-    init.qcom.class_main.sh \
-    init.qcom.ril.sh
+# Etc scripts
+PRODUCT_COPY_FILES += \
+    device/samsung/serranodsdd/rootdir/etc/init.qcom.class_main.sh:system/etc/init.qcom.class_main.sh \
+    device/samsung/serranodsdd/rootdir/etc/init.qcom.ril.sh:system/etc/init.qcom.ril.sh \
