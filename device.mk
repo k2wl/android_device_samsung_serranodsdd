@@ -22,7 +22,7 @@ PRODUCT_COPY_FILES += \
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/init.carrier.rc:root/init.carrier.rc
+    device/samsung/serranodsdd/init.carrier.rc:root/init.carrier.rc
     
 # Operator name
 PRODUCT_COPY_FILES += \
@@ -33,3 +33,8 @@ PRODUCT_COPY_FILES += \
 ADDITIONAL_DEFAULT_PROPERTIES += \
 ro.secure=0 \
 ro.adb.secure=0 \
+
+# Init scripts
+PRODUCT_PACKAGES += \
+    init.qcom.class_main.sh \
+    init.qcom.ril.sh
