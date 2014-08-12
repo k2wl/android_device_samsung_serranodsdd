@@ -1,0 +1,53 @@
+From 759ceed42af4059743616147008c72708fb39d9b Mon Sep 17 00:00:00 2001
+From: k2wl <k2wl@github.com>
+Date: Fri, 25 Jul 2014 10:44:17 +0530
+Subject: [PATCH] MSIM: Fix phone app crash
+
+Change-Id: I1498c1ad9ac8b65e1f7aa9c9bee31851736d7a34
+Signed-off-by: k2wl <k2wl@github.com>
+---
+ src/com/android/phone/GsmUmtsOptions.java | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
+
+diff --git a/src/com/android/phone/GsmUmtsOptions.java b/src/com/android/phone/GsmUmtsOptions.java
+index f7db6ca..6f187e2 100644
+--- a/src/com/android/phone/GsmUmtsOptions.java
++++ b/src/com/android/phone/GsmUmtsOptions.java
+@@ -90,10 +90,7 @@ public class GsmUmtsOptions {
+                 mPrefScreen.removePreference(mPrefScreen.findPreference(BUTTON_APN_EXPAND_KEY));
+             }
+             if (!res.getBoolean(R.bool.config_operator_selection_expand)) {
+-                if (mButtonOperatorSelectionExpand != null) {
+-                    mPrefScreen.removePreference(mButtonOperatorSelectionExpand);
+-                    mButtonOperatorSelectionExpand = null;
+-               }
++                mPrefScreen.removePreference(mButtonOperatorSelectionExpand);
+             }
+         }
+         updateOperatorSelectionVisibility();
+@@ -102,10 +99,6 @@ public class GsmUmtsOptions {
+     private void updateOperatorSelectionVisibility() {
+         log("updateOperatorSelectionVisibility. mPhone = " + mPhone.getPhoneName());
+         Resources res = mPrefActivity.getResources();
+-        if (mButtonOperatorSelectionExpand == null) {
+-            android.util.Log.e(LOG_TAG, "mButtonOperatorSelectionExpand is null");
+-            return;
+-        }
+         if (!mPhone.isManualNetSelAllowed()) {
+             log("Manual network selection not allowed.Disabling Operator Selection menu.");
+             mButtonOperatorSelectionExpand.setEnabled(false);
+@@ -115,10 +108,7 @@ public class GsmUmtsOptions {
+                 mButtonOperatorSelectionExpand.setEnabled(true);
+             } else {
+                 log("[CSP] Disabling Operator Selection menu.");
+-                if (mButtonOperatorSelectionExpand != null) {
+-                    mPrefScreen.removePreference(mButtonOperatorSelectionExpand);
+-                    mButtonOperatorSelectionExpand = null;
+-                }
++                mPrefScreen.removePreference(mButtonOperatorSelectionExpand);
+             }
+         }
+     }
+-- 
+1.9.1
+

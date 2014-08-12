@@ -1,9 +1,9 @@
-From 8f11576e5ff8dfb811b2365538740b026264101c Mon Sep 17 00:00:00 2001
+From 358af5a5fe02f0fb3b9e169dbf103cb7c5c832c9 Mon Sep 17 00:00:00 2001
 From: k2wl <k2wl@github.com>
-Date: Wed, 6 Aug 2014 22:26:32 +0530
-Subject: [PATCH] fixing signal strength and operator name and RIL
+Date: Sat, 9 Aug 2014 16:19:18 +0530
+Subject: [PATCH] signal strength and RIL fixes for s4mini duos
 
-Change-Id: I4c407194d29af7d200fa32b6647e01b5b79fc808
+Change-Id: I7adf5309c0846e0dfc2b394063839d5ff975afe1
 Signed-off-by: k2wl <k2wl@github.com>
 ---
  .../android/systemui/statusbar/phone/PhoneStatusBar.java |  5 +----

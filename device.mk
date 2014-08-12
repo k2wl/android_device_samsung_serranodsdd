@@ -22,13 +22,23 @@ PRODUCT_COPY_FILES += \
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/init.carrier.rc:root/init.carrier.rc
+    device/samsung/serranodsdd/init.carrier.rc:root/init.carrier.rc
     
 # Operator name
 PRODUCT_COPY_FILES += \
     device/samsung/serranodsdd/plmn_se13.bin:system/etc/plmn_se13.bin \
     device/samsung/serranodsdd/plmn_delta.bin:system/etc/plmn_delta.bin \
-    
+
+# Default.prop overrides to get adb working at boot   
+ADDITIONAL_DEFAULT_PROPERTIES += \
+ro.secure=0 \
+ro.adb.secure=0 \
+
+# Etc scripts
+PRODUCT_COPY_FILES += \
+    device/samsung/serranodsdd/rootdir/etc/init.qcom.class_main.sh:system/etc/init.qcom.class_main.sh \
+    device/samsung/serranodsdd/rootdir/etc/init.qcom.ril.sh:system/etc/init.qcom.ril.sh \
+
 #common build.props
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.product.locale.language=en \

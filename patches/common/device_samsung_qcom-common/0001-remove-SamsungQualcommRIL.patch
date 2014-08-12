@@ -1,9 +1,9 @@
-From ce9b332a1e553bcf8eda346887aca590a887b5e8 Mon Sep 17 00:00:00 2001
+From 958bd3ad636db9ea5aa053e1c978d04dcb7ad19f Mon Sep 17 00:00:00 2001
 From: k2wl <k2wl@github.com>
-Date: Wed, 6 Aug 2014 22:22:49 +0530
-Subject: [PATCH] making dual sim work on s4 mini duos
+Date: Sat, 9 Aug 2014 16:21:35 +0530
+Subject: [PATCH] remove SamsungQualcommRIL so that s4mini duos ril should work
 
-Change-Id: Id72036cc0d6c990fc2913ced384b9e85e5b6bd42
+Change-Id: I9d821e7d90d43bff7e3f65885d28520f02f4ee39
 Signed-off-by: k2wl <k2wl@github.com>
 ---
  qcom-common.mk | 1 -
