@@ -1,7 +1,7 @@
 From de61d9e28dd1f4e642e00e03acbab9665166ed73 Mon Sep 17 00:00:00 2001
 From: k2wl <k2wl@github.com>
 Date: Fri, 8 Aug 2014 05:48:36 +0530
-Subject: [PATCH] fixing network modes and FDN crash
+Subject: [PATCH] fixing network modes
 
 Change-Id: I69a8f693847a1c8aa12875b20c25de4968bb45f3
 Signed-off-by: k2wl <k2wl@github.com>
