@@ -34,10 +34,9 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
 ro.secure=0 \
 ro.adb.secure=0 \
 
- #common build.props
+#common build.props
 PRODUCT_PROPERTY_OVERRIDES += \
 ro.use_data_netmgrd=true \
-
 
 # Etc scripts
 PRODUCT_COPY_FILES += \
