@@ -9,8 +9,7 @@ Signed-off-by: k2wl <k2wl@github.com>
  res/values/cm_arrays.xml                           | 19 -----------
  res/values/strings.xml                             | 38 ----------------------
  src/com/android/phone/CallFeaturesSetting.java     | 14 +++++---
- .../phone/MSimMobileNetworkSubSettings.java        | 27 +++++----------
- 4 files changed, 18 insertions(+), 80 deletions(-)
+ 3 files changed, 13 insertions(+), 70 deletions(-)
 
 diff --git a/res/values/cm_arrays.xml b/res/values/cm_arrays.xml
 index 7d02871..02f2ee1 100644
@@ -129,50 +128,6 @@ index 3010e16..639e4c4 100644
          activity.finish();
      }
  }
-diff --git a/src/com/android/phone/MSimMobileNetworkSubSettings.java b/src/com/android/phone/MSimMobileNetworkSubSettings.java
-index f54153f..b4244c1 100644
---- a/src/com/android/phone/MSimMobileNetworkSubSettings.java
-+++ b/src/com/android/phone/MSimMobileNetworkSubSettings.java
-@@ -211,31 +211,20 @@ public class MSimMobileNetworkSubSettings extends PreferenceActivity
-         mButtonPreferredNetworkMode = (ListPreference) prefSet.findPreference(
-                 BUTTON_PREFERED_NETWORK_MODE);
- 
--        boolean isLteOnCdma = mPhone.getLteOnCdmaMode() == PhoneConstants.LTE_ON_CDMA_TRUE;
--        if (getResources().getBoolean(R.bool.world_phone) == true) {
--            // set the listener for the mButtonPreferredNetworkMode list preference so we can issue
--            // change Preferred Network Mode.
--            mButtonPreferredNetworkMode.setOnPreferenceChangeListener(this);
-+        // set the listener for the mButtonPreferredNetworkMode list preference so we can issue
-+        // change Preferred Network Mode.
-+        mButtonPreferredNetworkMode.setOnPreferenceChangeListener(this);
- 
--            //Get the networkMode from Settings.System and displays it
--            int settingsNetworkMode = getPreferredNetworkMode();
--            mButtonPreferredNetworkMode.setValue(Integer.toString(settingsNetworkMode));
-+        //Get the networkMode from Settings.System and displays it
-+        int settingsNetworkMode = getPreferredNetworkMode();
-+        mButtonPreferredNetworkMode.setValue(Integer.toString(settingsNetworkMode));
-+
-+        if (getResources().getBoolean(R.bool.world_phone) == true) {
-             mCdmaOptions = new CdmaOptions(this, prefSet, mPhone);
-             mGsmUmtsOptions = new GsmUmtsOptions(this, prefSet, mSubscription);
-         } else {
--            if (!isLteOnCdma) {
--                prefSet.removePreference(mButtonPreferredNetworkMode);
--            }
-             int phoneType = mPhone.getPhoneType();
-             if (phoneType == PhoneConstants.PHONE_TYPE_CDMA) {
--                mCdmaOptions = new CdmaOptions(this, prefSet, mPhone);
--                if (isLteOnCdma) {
--                    mButtonPreferredNetworkMode.setOnPreferenceChangeListener(this);
--
--                    int settingsNetworkMode = getPreferredNetworkMode();
--                    mButtonPreferredNetworkMode.setValue(
--                            Integer.toString(settingsNetworkMode));
--                }
- 
-             } else if (phoneType == PhoneConstants.PHONE_TYPE_GSM) {
-                 mGsmUmtsOptions = new GsmUmtsOptions(this, prefSet, mSubscription);
 -- 
 1.9.1
 
