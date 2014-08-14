@@ -22,8 +22,8 @@ PRODUCT_COPY_FILES += \
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
-    device/samsung/serranodsdd/init.carrier.rc:root/init.carrier.rc \
-    device/samsung/serranodsdd/init.serranods.rc:root/init.serranods.rc \
+    device/samsung/serranodsdd/rootdir/init.carrier.rc:root/init.carrier.rc \
+    device/samsung/serranodsdd/rootdir/init.serranods.rc:root/init.serranods.rc \
     
 # Operator name
 PRODUCT_COPY_FILES += \
