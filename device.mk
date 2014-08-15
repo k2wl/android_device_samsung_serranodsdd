@@ -22,8 +22,7 @@ PRODUCT_COPY_FILES += \
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
-    device/samsung/serranodsdd/rootdir/init.carrier.rc:root/init.carrier.rc \
-    device/samsung/serranodsdd/rootdir/init.serranods.rc:root/init.serranods.rc \
+    device/samsung/serranodsdd/init.carrier.rc:root/init.carrier.rc
     
 # Operator name
 PRODUCT_COPY_FILES += \
@@ -35,8 +34,11 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
 ro.secure=0 \
 ro.adb.secure=0 \
 
-# build.props
+#common build.props
 PRODUCT_PROPERTY_OVERRIDES += \
 ro.use_data_netmgrd=true \
 
-
+# Etc scripts
+PRODUCT_COPY_FILES += \
+    device/samsung/serranodsdd/rootdir/etc/init.qcom.class_main.sh:system/etc/init.qcom.class_main.sh \
+    device/samsung/serranodsdd/rootdir/etc/init.qcom.ril.sh:system/etc/init.qcom.ril.sh \
