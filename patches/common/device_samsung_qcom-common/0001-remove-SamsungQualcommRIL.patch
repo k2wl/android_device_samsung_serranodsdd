@@ -1,9 +1,9 @@
-From 958bd3ad636db9ea5aa053e1c978d04dcb7ad19f Mon Sep 17 00:00:00 2001
+From 02947b50ae61679a322d188b14aac7b2ec34e820 Mon Sep 17 00:00:00 2001
 From: k2wl <k2wl@github.com>
-Date: Sat, 9 Aug 2014 16:21:35 +0530
-Subject: [PATCH] remove SamsungQualcommRIL so that s4mini duos ril should work
+Date: Thu, 4 Sep 2014 14:27:19 +0530
+Subject: [PATCH] updated patch
 
-Change-Id: I9d821e7d90d43bff7e3f65885d28520f02f4ee39
+Change-Id: I67a3f898841170b84077b569e6d356a4afcf0393
 Signed-off-by: k2wl <k2wl@github.com>
 ---
  qcom-common.mk | 1 -

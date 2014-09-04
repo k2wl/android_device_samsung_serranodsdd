@@ -1,9 +1,9 @@
-From 358af5a5fe02f0fb3b9e169dbf103cb7c5c832c9 Mon Sep 17 00:00:00 2001
+From 221eafffd113bc9c9ab524601d45cb8c7cfda938 Mon Sep 17 00:00:00 2001
 From: k2wl <k2wl@github.com>
-Date: Sat, 9 Aug 2014 16:19:18 +0530
-Subject: [PATCH] signal strength and RIL fixes for s4mini duos
+Date: Thu, 4 Sep 2014 14:12:08 +0530
+Subject: [PATCH] updated patch
 
-Change-Id: I7adf5309c0846e0dfc2b394063839d5ff975afe1
+Change-Id: I3e0f2a7b4db68e83bb1ebb4b456c6cfefba33c98
 Signed-off-by: k2wl <k2wl@github.com>
 ---
  .../android/systemui/statusbar/phone/PhoneStatusBar.java |  5 +----
@@ -12,10 +12,10 @@ Signed-off-by: k2wl <k2wl@github.com>
  3 files changed, 10 insertions(+), 13 deletions(-)
 
 diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java
-index 08ca930..a60fc7c 100644
+index 6762c4d..5acc1b3 100644
 --- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java
 +++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java
-@@ -816,7 +816,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
+@@ -821,7 +821,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
              }
  
              mCarrierLabel = (TextView)mStatusBarWindow.findViewById(R.id.carrier_label);
@@ -23,7 +23,7 @@ index 08ca930..a60fc7c 100644
              mShowCarrierInPanel = (mCarrierLabel != null);
  
              if (DEBUG) Log.v(TAG, "carrierlabel=" + mCarrierLabel + " show=" +
-@@ -827,12 +826,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
+@@ -832,12 +831,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                  // for mobile devices, we always show mobile connection info here (SPN/PLMN)
                  // for other devices, we show whatever network is connected
                  if (mMSimNetworkController.hasMobileDataFeature()) {
@@ -38,7 +38,7 @@ index 08ca930..a60fc7c 100644
                  mPile.setOnSizeChangedListener(new OnSizeChangedListener() {
                      @Override
 diff --git a/telephony/java/android/telephony/SignalStrength.java b/telephony/java/android/telephony/SignalStrength.java
-index 896c472..1909a9f 100644
+index a2e061c..646e930 100644
 --- a/telephony/java/android/telephony/SignalStrength.java
 +++ b/telephony/java/android/telephony/SignalStrength.java
 @@ -423,7 +423,7 @@ public class SignalStrength implements Parcelable {
