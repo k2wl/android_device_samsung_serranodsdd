@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+# Device overlay
+DEVICE_PACKAGE_OVERLAYS += device/samsung/serranodsdd/overlay
 
 # Inherit from serrano-common
 $(call inherit-product, device/samsung/serrano-common/serrano-common.mk)
