@@ -1,0 +1,42 @@
+From 0c135236448cae67feb662bf5254880465fde379 Mon Sep 17 00:00:00 2001
+From: k2wl <k2wl@github.com>
+Date: Fri, 5 Sep 2014 11:39:27 +0530
+Subject: [PATCH] Add support for s4 mini duos RIL
+
+Change-Id: I043f1e85be93b3466eb91187538c3a7c05348415
+Signed-off-by: k2wl <k2wl@github.com>
+---
+ rootdir/init.qcom.rc | 1 +
+ serrano-common.mk    | 4 ----
+ 2 files changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/rootdir/init.qcom.rc b/rootdir/init.qcom.rc
+index 7cf700d..a01000d 100644
+--- a/rootdir/init.qcom.rc
++++ b/rootdir/init.qcom.rc
+@@ -26,6 +26,7 @@
+ #
+ 
+ import init.qcom.usb.rc
++import init.serranods.rc
+ 
+ on init
+     # Set permissions for persist partition
+diff --git a/serrano-common.mk b/serrano-common.mk
+index 494f539..446ee46 100644
+--- a/serrano-common.mk
++++ b/serrano-common.mk
+@@ -174,10 +174,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
+     audio.gapless.playback.disable=true \
+     qcom.hw.aac.encoder=true
+ 
+-# RIL
+-PRODUCT_PROPERTY_OVERRIDES += \
+-    ro.telephony.ril_class=SamsungQualcommRIL
+-
+ # Enable Samsung EMS dial path
+ PRODUCT_PROPERTY_OVERRIDES += \
+     ro.telephony.ril.v3=samsungEMSReq
+-- 
+1.9.1
+
