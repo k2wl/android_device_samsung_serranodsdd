@@ -8,8 +8,7 @@ Signed-off-by: k2wl <k2wl@github.com>
 ---
  .../android/systemui/statusbar/phone/PhoneStatusBar.java |  5 +----
  telephony/java/android/telephony/SignalStrength.java     |  2 +-
- .../com/android/internal/telephony/RILConstants.java     | 16 ++++++++--------
- 3 files changed, 10 insertions(+), 13 deletions(-)
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java
 index 6762c4d..5acc1b3 100644
@@ -50,33 +49,6 @@ index a2e061c..646e930 100644
      }
  
      /**
-diff --git a/telephony/java/com/android/internal/telephony/RILConstants.java b/telephony/java/com/android/internal/telephony/RILConstants.java
-index e132d53..c8eb209 100644
---- a/telephony/java/com/android/internal/telephony/RILConstants.java
-+++ b/telephony/java/com/android/internal/telephony/RILConstants.java
-@@ -284,14 +284,14 @@ cat include/telephony/ril.h | \
-     int RIL_REQUEST_ACKNOWLEDGE_INCOMING_GSM_SMS_WITH_PDU = 106;
-     int RIL_REQUEST_STK_SEND_ENVELOPE_WITH_STATUS = 107;
-     int RIL_REQUEST_VOICE_RADIO_TECH = 108;
--    int RIL_REQUEST_GET_CELL_INFO_LIST = 109;
--    int RIL_REQUEST_SET_UNSOL_CELL_INFO_LIST_RATE = 110;
--    int RIL_REQUEST_SET_INITIAL_ATTACH_APN = 111;
--    int RIL_REQUEST_IMS_REGISTRATION_STATE = 112;
--    int RIL_REQUEST_IMS_SEND_SMS = 113;
--    int RIL_REQUEST_GET_DATA_CALL_PROFILE = 114;
--    int RIL_REQUEST_SET_UICC_SUBSCRIPTION = 115;
--    int RIL_REQUEST_SET_DATA_SUBSCRIPTION = 116;
-+    int RIL_REQUEST_GET_CELL_INFO_LIST = 116;
-+    int RIL_REQUEST_SET_UNSOL_CELL_INFO_LIST_RATE = 114;
-+    int RIL_REQUEST_SET_INITIAL_ATTACH_APN = 115;
-+    int RIL_REQUEST_IMS_REGISTRATION_STATE = 109;
-+    int RIL_REQUEST_IMS_SEND_SMS = 110;
-+    int RIL_REQUEST_GET_DATA_CALL_PROFILE = 111;
-+    int RIL_REQUEST_SET_UICC_SUBSCRIPTION = 112;
-+    int RIL_REQUEST_SET_DATA_SUBSCRIPTION = 113;
- 
-     int RIL_UNSOL_RESPONSE_BASE = 1000;
-     int RIL_UNSOL_RESPONSE_RADIO_STATE_CHANGED = 1000;
 -- 
 1.9.1
 
