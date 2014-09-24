@@ -1,21 +1,21 @@
-From 2a42b92b5b81aa968834c0a45b41ee5cedd483ed Mon Sep 17 00:00:00 2001
+From 197f3c04b9bb33b2d166ea626419517ec38b1555 Mon Sep 17 00:00:00 2001
 From: k2wl <k2wl@github.com>
-Date: Wed, 10 Sep 2014 22:41:34 +0530
-Subject: [PATCH] remove SamsungMSM8930RIL
+Date: Wed, 24 Sep 2014 06:47:25 +0530
+Subject: [PATCH] remove SamsungMSM8930RIL from build.prop
 
-Change-Id: I44651fd8a839a8801594b1d0a5534b2daac99b21
+Change-Id: I20144948a317dc67c98b8e2b0ee338cef3de43b3
 Signed-off-by: k2wl <k2wl@github.com>
 ---
  serrano-common.mk | 4 ----
  1 file changed, 4 deletions(-)
 
 diff --git a/serrano-common.mk b/serrano-common.mk
-index 693c121..0e37a65 100644
+index 543d537..4e21f75 100644
 --- a/serrano-common.mk
 +++ b/serrano-common.mk
 @@ -174,10 +174,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
-     audio.gapless.playback.disable=true \
-     qcom.hw.aac.encoder=true
+     qcom.hw.aac.encoder=true \
+     ro.config.max_starting_bg=8
  
 -# RIL
 -PRODUCT_PROPERTY_OVERRIDES += \
@@ -26,4 +26,5 @@ index 693c121..0e37a65 100644
  
 -- 
 1.9.1
+
 
