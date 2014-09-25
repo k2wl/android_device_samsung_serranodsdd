@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Device overlay
-DEVICE_PACKAGE_OVERLAYS += device/samsung/serranodsdd/overlay
 
 # Inherit from serrano-common
 $(call inherit-product, device/samsung/serrano-common/serrano-common.mk)
@@ -25,7 +23,7 @@ PRODUCT_COPY_FILES += \
 # Ramdisk
 PRODUCT_COPY_FILES += \
     device/samsung/serranodsdd/init.carrier.rc:root/init.carrier.rc \
-    device/samsung/serranodsdd/init.serranods.rc:root/init.serranods.rc \
+
 # Operator name
 PRODUCT_COPY_FILES += \
     device/samsung/serranodsdd/plmn_se13.bin:system/etc/plmn_se13.bin \
@@ -35,10 +33,6 @@ PRODUCT_COPY_FILES += \
 ADDITIONAL_DEFAULT_PROPERTIES += \
 ro.secure=0 \
 ro.adb.secure=0 \
-
-#common build.props
-PRODUCT_PROPERTY_OVERRIDES += \
-ro.use_data_netmgrd=true \
 
 # Etc scripts
 PRODUCT_COPY_FILES += \

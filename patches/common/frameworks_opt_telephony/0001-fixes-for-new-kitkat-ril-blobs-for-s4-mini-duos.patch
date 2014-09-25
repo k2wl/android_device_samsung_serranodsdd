@@ -1,0 +1,96 @@
+From 7fe3e982f73ec6633b614c744685b0e9f2f378e3 Mon Sep 17 00:00:00 2001
+From: k2wl <k2wl@github.com>
+Date: Thu, 25 Sep 2014 02:02:28 +0530
+Subject: [PATCH] fixes for new kitkat ril blobs for s4 mini duos
+
+Change-Id: I0bc58a1ea43fc1a748b7a033cfb99734539bca44
+Signed-off-by: k2wl <k2wl@github.com>
+---
+ .../com/android/internal/telephony/CallDetails.java  |  2 +-
+ .../com/android/internal/telephony/DriverCall.java   |  5 +++++
+ src/java/com/android/internal/telephony/RIL.java     | 20 +++++++++++++++++++-
+ 3 files changed, 25 insertions(+), 2 deletions(-)
+
+diff --git a/src/java/com/android/internal/telephony/CallDetails.java b/src/java/com/android/internal/telephony/CallDetails.java
+index e447bc5..d8e06fc 100644
+--- a/src/java/com/android/internal/telephony/CallDetails.java
++++ b/src/java/com/android/internal/telephony/CallDetails.java
+@@ -96,7 +96,7 @@ public class CallDetails {
+                                                       * TeleService.
+                                                       */
+ 
+-    public static final int CALL_TYPE_UNKNOWN = 10; /*
++    public static final int CALL_TYPE_UNKNOWN = 0; /*
+                                                      * Phone.CALL_TYPE_UNKNOWN;
+                                                      * Unknown Call type, may be
+                                                      * used for answering call
+diff --git a/src/java/com/android/internal/telephony/DriverCall.java b/src/java/com/android/internal/telephony/DriverCall.java
+index a923d8f..9eabc77 100644
+--- a/src/java/com/android/internal/telephony/DriverCall.java
++++ b/src/java/com/android/internal/telephony/DriverCall.java
+@@ -66,6 +66,11 @@ public class DriverCall implements Comparable<DriverCall> {
+             ret.state = stateFromCLCC(p.nextInt());
+ 
+             ret.isVoice = (0 == p.nextInt());
++
++       //FIX for samsung i9192 
++ 	   int fix9192 = p.nextInt();
++	   ///////////////////////////
++
+             ret.isMpty = p.nextBoolean();
+ 
+             // use ALLOWED as default presentation while parsing CLCC
+diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
+index d9b12b4..fb2ee62 100644
+--- a/src/java/com/android/internal/telephony/RIL.java
++++ b/src/java/com/android/internal/telephony/RIL.java
+@@ -985,6 +985,14 @@ public class RIL extends BaseCommands implements CommandsInterface {
+         rr.mParcel.writeString(address);
+         rr.mParcel.writeInt(clirMode);
+ 
++
++// FIX for samsung i9192 
++
++	rr.mParcel.writeInt(0);
++        rr.mParcel.writeInt(1);
++        rr.mParcel.writeString("");
++
++
+         if (uusInfo == null) {
+             rr.mParcel.writeInt(0); // UUS information is absent
+         } else {
+@@ -3593,6 +3601,11 @@ public class RIL extends BaseCommands implements CommandsInterface {
+ 
+     protected Object
+     responseCallList(Parcel p) {
++   int isvideo;
++   int call_type;
++   int call_domain;
++   String call_extras; 
++	
+         int num;
+         int voiceSettings;
+         ArrayList<DriverCall> response;
+@@ -3610,13 +3623,18 @@ public class RIL extends BaseCommands implements CommandsInterface {
+             dc = new DriverCall();
+ 
+             dc.state = DriverCall.stateFromCLCC(p.readInt());
+-            dc.index = p.readInt();
++            dc.index = (p.readInt()) & 0xff;
+             dc.TOA = p.readInt();
+             dc.isMpty = (0 != p.readInt());
+             dc.isMT = (0 != p.readInt());
+             dc.als = p.readInt();
+             voiceSettings = p.readInt();
+             dc.isVoice = (0 == voiceSettings) ? false : true;
++	   isvideo = p.readInt();
++	   call_type = p.readInt();
++	   call_domain = p.readInt();
++	   call_extras = p.readString();
++
+             dc.isVoicePrivacy = (0 != p.readInt());
+             dc.number = p.readString();
+             int np = p.readInt();
+-- 
+1.9.1
+
