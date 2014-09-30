@@ -1,29 +1,26 @@
-From f676484d5883e6758b2fc7a926c36c01bda30d52 Mon Sep 17 00:00:00 2001
+From b67241647a1d34a021581a940c1521d45cfd7fb1 Mon Sep 17 00:00:00 2001
 From: k2wl <k2wl@github.com>
-Date: Tue, 30 Sep 2014 13:32:46 +0530
-Subject: [PATCH] add our own seeranods ril class @sekil xda-developers
+Date: Tue, 30 Sep 2014 14:09:31 +0530
+Subject: [PATCH] add support for S4 mini duos ril class
 
-Change-Id: I82e4ef6cd76e4d9a329ca2fb74f5427e5d55c3ad
+Change-Id: I6db4da434b086eba34606646b019edcdbff4bb1b
 Signed-off-by: k2wl <k2wl@github.com>
 ---
- BoardConfigCommon.mk | 4 ++++
+ BoardConfigCommon.mk | 2 +-
  rootdir/init.qcom.rc | 2 +-
- serrano-common.mk    | 6 +++++-
- 3 files changed, 10 insertions(+), 2 deletions(-)
+ serrano-common.mk    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/BoardConfigCommon.mk b/BoardConfigCommon.mk
-index 6699b3b..a9472a4 100644
+index 6699b3b..5f0c350 100644
 --- a/BoardConfigCommon.mk
 +++ b/BoardConfigCommon.mk
-@@ -96,4 +96,8 @@ BOARD_USES_QC_TIME_SERVICES := true
+@@ -96,4 +96,4 @@ BOARD_USES_QC_TIME_SERVICES := true
  TARGET_POWERHAL_VARIANT :=
  
  # Custom RIL class
-+ifneq ($(filter serranoltespr,serrano3gxx$(TARGET_DEVICE)),)
- BOARD_RIL_CLASS := ../../../device/samsung/serrano-common/ril/
-+else
-+BOARD_RIL_CLASS := ../../../device/samsung/serranodsdd/ril
-+endif
+-BOARD_RIL_CLASS := ../../../device/samsung/serrano-common/ril/
++BOARD_RIL_CLASS := ../../../device/samsung/serranodsdd/ril/
 diff --git a/rootdir/init.qcom.rc b/rootdir/init.qcom.rc
 index 4366823..4d530d1 100644
 --- a/rootdir/init.qcom.rc
@@ -38,23 +35,18 @@ index 4366823..4d530d1 100644
  on property:sys.boot_completed=1
      write /sys/module/rpm_resources/enable_low_power/L2_cache 1
 diff --git a/serrano-common.mk b/serrano-common.mk
-index 543d537..1463c05 100644
+index 543d537..9c36e96 100644
 --- a/serrano-common.mk
 +++ b/serrano-common.mk
-@@ -176,8 +176,12 @@ PRODUCT_PROPERTY_OVERRIDES += \
+@@ -176,7 +176,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
  
  # RIL
  PRODUCT_PROPERTY_OVERRIDES += \
-+ifneq ($(filter serranoltespr,serrano3gxx$(TARGET_DEVICE)),)
-     ro.telephony.ril_class=SamsungMSM8930RIL
--
-+else
+-    ro.telephony.ril_class=SamsungMSM8930RIL
 +    ro.telephony.ril_class=SerranoDSRIL
-+ endif
-+ 
+ 
  # call common msm8930
  $(call inherit-product, device/samsung/msm8930-common/msm8930.mk)
- 
 -- 
 1.9.1
 
