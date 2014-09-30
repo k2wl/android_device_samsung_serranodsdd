@@ -1,0 +1,60 @@
+From f676484d5883e6758b2fc7a926c36c01bda30d52 Mon Sep 17 00:00:00 2001
+From: k2wl <k2wl@github.com>
+Date: Tue, 30 Sep 2014 13:32:46 +0530
+Subject: [PATCH] add our own seeranods ril class @sekil xda-developers
+
+Change-Id: I82e4ef6cd76e4d9a329ca2fb74f5427e5d55c3ad
+Signed-off-by: k2wl <k2wl@github.com>
+---
+ BoardConfigCommon.mk | 4 ++++
+ rootdir/init.qcom.rc | 2 +-
+ serrano-common.mk    | 6 +++++-
+ 3 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/BoardConfigCommon.mk b/BoardConfigCommon.mk
+index 6699b3b..a9472a4 100644
+--- a/BoardConfigCommon.mk
++++ b/BoardConfigCommon.mk
+@@ -96,4 +96,8 @@ BOARD_USES_QC_TIME_SERVICES := true
+ TARGET_POWERHAL_VARIANT :=
+ 
+ # Custom RIL class
++ifneq ($(filter serranoltespr,serrano3gxx$(TARGET_DEVICE)),)
+ BOARD_RIL_CLASS := ../../../device/samsung/serrano-common/ril/
++else
++BOARD_RIL_CLASS := ../../../device/samsung/serranodsdd/ril
++endif
+diff --git a/rootdir/init.qcom.rc b/rootdir/init.qcom.rc
+index 4366823..4d530d1 100644
+--- a/rootdir/init.qcom.rc
++++ b/rootdir/init.qcom.rc
+@@ -455,7 +455,7 @@ service charger /charger
+ on property:persist.radio.multisim.config=dsds
+     stop ril-daemon
+     start ril-daemon
+-    start ril-daemon1
++    start ril-daemon2
+ 
+ on property:sys.boot_completed=1
+     write /sys/module/rpm_resources/enable_low_power/L2_cache 1
+diff --git a/serrano-common.mk b/serrano-common.mk
+index 543d537..1463c05 100644
+--- a/serrano-common.mk
++++ b/serrano-common.mk
+@@ -176,8 +176,12 @@ PRODUCT_PROPERTY_OVERRIDES += \
+ 
+ # RIL
+ PRODUCT_PROPERTY_OVERRIDES += \
++ifneq ($(filter serranoltespr,serrano3gxx$(TARGET_DEVICE)),)
+     ro.telephony.ril_class=SamsungMSM8930RIL
+-
++else
++    ro.telephony.ril_class=SerranoDSRIL
++ endif
++ 
+ # call common msm8930
+ $(call inherit-product, device/samsung/msm8930-common/msm8930.mk)
+ 
+-- 
+1.9.1
+

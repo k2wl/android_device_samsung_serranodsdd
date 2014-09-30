@@ -31,10 +31,6 @@ PRODUCT_COPY_FILES += \
 
 # Default.prop overrides to get adb working at boot   
 ADDITIONAL_DEFAULT_PROPERTIES += \
-ro.secure=0 \
-ro.adb.secure=0 \
-
-# Etc scripts
-PRODUCT_COPY_FILES += \
-    device/samsung/serranodsdd/rootdir/etc/init.qcom.class_main.sh:system/etc/init.qcom.class_main.sh \
-    device/samsung/serranodsdd/rootdir/etc/init.qcom.ril.sh:system/etc/init.qcom.ril.sh \
+    ro.secure=0 \
+    ro.adb.secure=0 \
+    
