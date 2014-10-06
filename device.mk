@@ -22,8 +22,8 @@ PRODUCT_COPY_FILES += \
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
-    device/samsung/serranodsdd/init.carrier.rc:root/init.carrier.rc
-    
+    device/samsung/serranodsdd/init.carrier.rc:root/init.carrier.rc \
+
 # Operator name
 PRODUCT_COPY_FILES += \
     device/samsung/serranodsdd/plmn_se13.bin:system/etc/plmn_se13.bin \
@@ -33,10 +33,6 @@ PRODUCT_COPY_FILES += \
 ADDITIONAL_DEFAULT_PROPERTIES += \
 ro.secure=0 \
 ro.adb.secure=0 \
-
-#common build.props
-PRODUCT_PROPERTY_OVERRIDES += \
-ro.use_data_netmgrd=true \
 
 # Etc scripts
 PRODUCT_COPY_FILES += \
