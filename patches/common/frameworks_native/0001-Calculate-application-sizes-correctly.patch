@@ -1,0 +1,33 @@
+From 700d4b11dde623fe284955c4cd892d8c2804d4f5 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Mon, 9 Sep 2013 17:43:48 -0400
+Subject: [PATCH] Calculate application sizes correctly
+
+Thanks to Pierre-Hugues Husson for looking at my code and finding out
+that the application sizes were not being calculated properly!
+
+Change-Id: I68af6a9e5d1b2b7e60c0409b55d8ee578e567a69
+---
+ cmds/installd/commands.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/cmds/installd/commands.c b/cmds/installd/commands.c
+index 805872a..08d8a99 100644
+--- a/cmds/installd/commands.c
++++ b/cmds/installd/commands.c
+@@ -462,7 +462,11 @@ int get_size(const char *pkgname, userid_t userid, const char *apkpath,
+     }
+ 
+         /* add in size of any libraries */
+-    if (libdirpath != NULL && libdirpath[0] != '!') {
++        /* If the app is on the SD card, the libraries are stored in asecpath.
++         * If we don't check that asecpath is defined, the libraries will be
++         * counted twice. Once in asecsize and once in codesize. */
++    if ((asecpath == NULL || asecpath[0] == '!') &&
++            libdirpath != NULL && libdirpath[0] != '!') {
+         d = opendir(libdirpath);
+         if (d != NULL) {
+             dfd = dirfd(d);
+-- 
+1.9.1
+
