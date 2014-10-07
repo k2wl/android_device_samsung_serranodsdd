@@ -46,6 +46,7 @@ public class SerranoDSRIL extends RIL {
 
     public SerranoDSRIL(Context context, int networkMode, int cdmaSubscription, Integer instanceId) {
         super(context, networkMode, cdmaSubscription, instanceId);
+        mQANElements = 6;
     }
 
     @Override
