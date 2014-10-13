@@ -16,6 +16,9 @@
 # Inherit from serrano-common
 $(call inherit-product, device/samsung/serrano-common/serrano-common.mk)
 
+# Overlay
+DEVICE_PACKAGE_OVERLAYS += device/samsung/serranodsdd/overlay
+
 # Permissions
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml
@@ -24,11 +27,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     device/samsung/serranodsdd/init.carrier.rc:root/init.carrier.rc \
     device/samsung/serranodsdd/init.serranods.rc:root/init.serranods.rc \
-    
-# Operator name
-PRODUCT_COPY_FILES += \
-    device/samsung/serranodsdd/plmn_se13.bin:system/etc/plmn_se13.bin \
-    device/samsung/serranodsdd/plmn_delta.bin:system/etc/plmn_delta.bin \
 
 # Default.prop overrides to get adb working at boot   
 ADDITIONAL_DEFAULT_PROPERTIES += \
