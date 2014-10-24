@@ -212,7 +212,7 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
     @Override
     protected Object
     responseSignalStrength(Parcel p) {
-        int gsmSignalStrength = p.readInt() & 0xff;
+        int gsmSignalStrength = (p.readInt() & 0xffffff00) / 85;
         int gsmBitErrorRate = p.readInt();
         int cdmaDbm = p.readInt();
         int cdmaEcio = p.readInt();
