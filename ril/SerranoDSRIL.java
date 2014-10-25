@@ -21,22 +21,67 @@ package com.android.internal.telephony;
 
 import static com.android.internal.telephony.RILConstants.*;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.telephony.Rlog;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.LocalSocket;
+import android.net.LocalSocketAddress;
 import android.os.AsyncResult;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Parcel;
+import android.os.PowerManager;
+import android.os.SystemProperties;
+import android.os.PowerManager.WakeLock;
+import android.provider.Settings.SettingNotFoundException;
+import android.telephony.CellInfo;
+import android.telephony.NeighboringCellInfo;
 import android.telephony.PhoneNumberUtils;
+import android.telephony.Rlog;
 import android.telephony.SignalStrength;
-import com.android.internal.telephony.dataconnection.DataCallResponse;
-import com.android.internal.telephony.dataconnection.DcFailCause;
+import android.telephony.SmsManager;
+import android.telephony.SmsMessage;
+import android.text.TextUtils;
+import android.util.SparseArray;
+
+import com.android.internal.telephony.gsm.SmsBroadcastConfigInfo;
+import com.android.internal.telephony.gsm.SsData;
+import com.android.internal.telephony.gsm.SuppServiceNotification;
 import com.android.internal.telephony.uicc.IccCardApplicationStatus;
 import com.android.internal.telephony.uicc.IccCardStatus;
+import com.android.internal.telephony.uicc.IccIoResult;
+import com.android.internal.telephony.uicc.IccRefreshResponse;
+import com.android.internal.telephony.uicc.IccUtils;
+import com.android.internal.telephony.cdma.CdmaCallWaitingNotification;
+import com.android.internal.telephony.cdma.CdmaInformationRecords;
+import com.android.internal.telephony.cdma.CdmaSmsBroadcastConfigInfo;
+import com.android.internal.telephony.dataconnection.DcFailCause;
+import com.android.internal.telephony.dataconnection.DataCallResponse;
+import com.android.internal.telephony.dataconnection.DataProfileOmh;
+import com.android.internal.telephony.dataconnection.DataProfile;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Random;
+
 
 /**
- * RIL customization for Galaxy S4 Mini GT-I9192
+ * RIL customization for SAMSUNG GALAXY S4 MINI DUOS GT-I9192 devices
  *
  * {@hide}
  */
@@ -48,11 +93,18 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
     private static final int RIL_UNSOL_AM = 11010;
     private static final int RIL_UNSOL_WB_AMR_STATE = 11017;
     private static final int RIL_UNSOL_RESPONSE_HANDOVER = 11021;
+    private static final int RIL_UNSOL_ON_SS_I9192 = 1040;
+    private static final int RIL_UNSOL_STK_CC_ALPHA_NOTIFY_I9192 = 1041;
+    private static final int RIL_UNSOL_UICC_SUBSCRIPTION_STATUS_CHANGED_I9192 = 11031;
+
+
+
 
     public SerranoDSRIL(Context context, int networkMode, int cdmaSubscription,Integer instanceId) {
         super(context, networkMode, cdmaSubscription,  instanceId);
         mQANElements = 6;
     }
+
 
     @Override
     public void
@@ -212,7 +264,7 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
     @Override
     protected Object
     responseSignalStrength(Parcel p) {
-        int gsmSignalStrength = (p.readInt() & 0xffffff00) / 85;
+        int gsmSignalStrength = (p.readInt() & 0xff00)/85;
         int gsmBitErrorRate = p.readInt();
         int cdmaDbm = p.readInt();
         int cdmaEcio = p.readInt();
@@ -340,13 +392,14 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
         return response;
     }
 
+
     @Override
     protected void
     processUnsolicited (Parcel p) {
         Object ret;
         int dataPosition = p.dataPosition(); // save off position within the Parcel
         int response = p.readInt();
-
+        int newResponse = response;
         switch(response) {
             case RIL_UNSOL_RESPONSE_IMS_NETWORK_STATE_CHANGED:
                 ret = responseVoid(p);
@@ -363,15 +416,24 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
             case RIL_UNSOL_RESPONSE_HANDOVER:
                 ret = responseVoid(p);
                 break;
-            default:
-                // Rewind the Parcel
-                p.setDataPosition(dataPosition);
-
-                // Forward responses that we are not overriding to the super class
-                super.processUnsolicited(p);
-                return;
+            case 1040:
+                newResponse = RIL_UNSOL_ON_SS;
+                break;
+            case 1041:
+                newResponse = RIL_UNSOL_STK_CC_ALPHA_NOTIFY;
+                break;
+            case 11031:
+                newResponse = RIL_UNSOL_UICC_SUBSCRIPTION_STATUS_CHANGED;
+                break;
         }
+        if (newResponse != response) {
+            p.setDataPosition(dataPosition);
+            p.writeInt(newResponse);
+        }
+        p.setDataPosition(dataPosition);
+        super.processUnsolicited(p);
     }
+
 
     private void
     dialEmergencyCall(String address, int clirMode, Message result) {
