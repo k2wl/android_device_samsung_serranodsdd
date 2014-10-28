@@ -38,17 +38,3 @@ service ril-daemon2 /system/bin/rild -s rild1 -ds rild-debug1 -l /system/lib/lib
     socket rild-debug1 stream 660 radio system
     user root
     group radio cache inet misc audio log qcom_diag sdcard_r shell sdcard_rw system drmrpc
-
-# For DSDS enabled prop start ril-daemon2
-on property:ro.multi.rild=true
-    start ril-daemon2
-
-on property:persist.dsds.enabled=true
-    stop ril-daemon
-    start ril-daemon
-    start ril-daemon2
-
-on property:persist.multisim.config=dsds
-    stop ril-daemon
-    start ril-daemon
-    start ril-daemon2
