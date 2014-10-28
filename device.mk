@@ -16,6 +16,9 @@
 # Inherit from serrano-common
 $(call inherit-product, device/samsung/serrano-common/serrano-common.mk)
 
+# Overlay
+DEVICE_PACKAGE_OVERLAYS += device/samsung/serranodsdd/overlay
+
 # Permissions
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml
