@@ -1,0 +1,38 @@
+From 2607b5e1f2c7f37da9cb8f65a5829cbdc5a082e3 Mon Sep 17 00:00:00 2001
+From: k2wl <k2wl@github.com>
+Date: Fri, 14 Nov 2014 01:28:02 +0530
+Subject: [PATCH] patch unable to set sim subscription in dual sim
+
+Change-Id: I496d0eab4eff3ac89c413edb6faea0064ec23a2b
+Signed-off-by: k2wl <k2wl@github.com>
+---
+ src/com/android/phone/SetSubscription.java | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/com/android/phone/SetSubscription.java b/src/com/android/phone/SetSubscription.java
+index c29a5ad..4a3af76 100644
+--- a/src/com/android/phone/SetSubscription.java
++++ b/src/com/android/phone/SetSubscription.java
+@@ -341,8 +341,10 @@ public class SetSubscription extends PreferenceActivity implements
+                     String key = subPref.getKey();
+                     boolean on = (Boolean)newValue;
+                     int numSubSelected = 0;
++                    boolean allnull = true;
+                     for (int i = 0; i < subArray.length; i++) {
+                         if (subArray[i] != null) {
++							allnull = false;
+                             SwitchPreference pref = subArray[i];
+                             if (pref.isChecked() && !pref.equals(subPref)) {
+                                 numSubSelected++;
+@@ -350,7 +352,7 @@ public class SetSubscription extends PreferenceActivity implements
+                         }
+                     }
+                     Log.d(TAG, "setSubscription: key = " + key);
+-                    if (numSubSelected == 0) {
++                    if ((numSubSelected == 0) && (!allnull)) {
+                         // Show a message to prompt the user to select atleast one.
+                         Toast toast = Toast.makeText(getApplicationContext(),
+                                 R.string.set_subscription_error_atleast_one,
+-- 
+1.9.1
+
