@@ -62,7 +62,6 @@ import com.android.internal.telephony.cdma.CdmaInformationRecords;
 import com.android.internal.telephony.cdma.CdmaSmsBroadcastConfigInfo;
 import com.android.internal.telephony.dataconnection.DcFailCause;
 import com.android.internal.telephony.dataconnection.DataCallResponse;
-import com.android.internal.telephony.dataconnection.DataProfileOmh;
 import com.android.internal.telephony.dataconnection.DataProfile;
 
 import java.io.ByteArrayInputStream;
@@ -96,7 +95,7 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
     private static final int RIL_UNSOL_ON_SS_I9192 = 1040;
     private static final int RIL_UNSOL_STK_CC_ALPHA_NOTIFY_I9192 = 1041;
     private static final int RIL_UNSOL_UICC_SUBSCRIPTION_STATUS_CHANGED_I9192 = 11031;
-
+    private Message mPendingGetSimStatus;
 
 
 
@@ -135,6 +134,19 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
 
         send(rr);
     }
+
+
+   @Override
+    public void getIccCardStatus(Message result) {
+        if (this.mState != RadioState.RADIO_ON) {
+            this.mPendingGetSimStatus = result;
+        } else {
+            super.getIccCardStatus(result);
+        }
+    }
+
+
+
 
     @Override
     protected Object
@@ -452,6 +464,37 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
 
         send(rr);
     }
+
+   @Override
+    protected void switchToRadioState(RadioState newState) {
+        super.switchToRadioState(newState);
+        if (newState == RadioState.RADIO_ON && this.mPendingGetSimStatus != null) {
+            super.getIccCardStatus(this.mPendingGetSimStatus);
+            this.mPendingGetSimStatus = null;
+        }
+    }
+
+
+   @Override
+    public void setUiccSubscription(int slotId, int appIndex, int subId,
+            int subStatus, Message result) {
+        //Note: This RIL request is also valid for SIM and RUIM (ICC card)
+        RILRequest rr = RILRequest.obtain(115, result);
+
+        if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest)
+                + " slot: " + slotId + " appIndex: " + appIndex
+                + " subId: " + subId + " subStatus: " + subStatus);
+
+        rr.mParcel.writeInt(slotId);
+        rr.mParcel.writeInt(appIndex);
+        rr.mParcel.writeInt(subId);
+        rr.mParcel.writeInt(subStatus);
+
+        send(rr);
+    }
+
+
+
 
     private void logParcel(Parcel p) {
         StringBuffer s = new StringBuffer();

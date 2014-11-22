@@ -34,6 +34,3 @@ BOARD_RIL_CLASS := ../../../device/samsung/serranodsdd/ril
 
 # BLN
 BOARD_HAVE_GENERIC_BLN := true
-
-# External apps on SD
-TARGET_EXTERNAL_APPS = sdcard1
