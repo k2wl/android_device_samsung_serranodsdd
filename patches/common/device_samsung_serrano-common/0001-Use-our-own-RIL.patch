@@ -1,27 +1,27 @@
-From 0487621d444d903b8c67ec666bad9854ae2d95db Mon Sep 17 00:00:00 2001
+From c6732ae4128095ec22297f84e2741072df8740f0 Mon Sep 17 00:00:00 2001
 From: k2wl <k2wl@github.com>
-Date: Mon, 6 Oct 2014 06:39:20 +0530
-Subject: [PATCH] use our own dual sim ril
+Date: Sat, 6 Dec 2014 06:12:46 +0530
+Subject: [PATCH] Use our own RIL
 
-Change-Id: Ie6599a0ae4d1e6fd864d06316ba1ffb546174b6f
+Change-Id: I7c8e73ca05567b7213335fa9bb8f53d039850962
 Signed-off-by: k2wl <k2wl@github.com>
 ---
  serrano-common.mk | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/serrano-common.mk b/serrano-common.mk
-index 7d354fe..9c36e96 100644
+index 0d0b6eb..d79eca8 100644
 --- a/serrano-common.mk
 +++ b/serrano-common.mk
-@@ -176,7 +176,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
+@@ -178,7 +178,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
  
  # RIL
  PRODUCT_PROPERTY_OVERRIDES += \
 -    ro.telephony.ril_class=SerranoRIL
 +    ro.telephony.ril_class=SerranoDSRIL
  
- # call common msm8930
- $(call inherit-product, device/samsung/msm8930-common/msm8930.mk)
+ PRODUCT_PROPERTY_OVERRIDES += \
+     ro.product.locale.language=en \
 -- 
 1.9.1
 
