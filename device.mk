@@ -32,8 +32,3 @@ PRODUCT_COPY_FILES += \
 ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.secure=0 \
     ro.adb.secure=0 \
-
-#common build.props
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.product.locale.language=en \
-    ro.product.locale.region=US \
