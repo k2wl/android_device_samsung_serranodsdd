@@ -23,8 +23,6 @@
 # Inherit from common serrano
 -include device/samsung/serrano-common/BoardConfigCommon.mk
 
-TARGET_SPECIFIC_HEADER_PATH := device/samsung/serranodsdd/include
-
 # Assert
 TARGET_OTA_ASSERT_DEVICE := serranods,serranodsdd,serranodsub,serranodsxx,GT-I9192
 
