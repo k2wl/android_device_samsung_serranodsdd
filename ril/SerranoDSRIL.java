@@ -493,8 +493,23 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
         send(rr);
     }
 
-
-
+   @Override
+    public void setDataAllowed(boolean allowed, Message result) {
+	int req = 123;
+        RILRequest rr;
+	if (allowed)
+        {
+            req = 116;
+            rr = RILRequest.obtain(req, result);
+        }
+        else
+        {
+            rr = RILRequest.obtain(req, result);
+            rr.mParcel.writeInt(1);
+            rr.mParcel.writeInt(allowed ? 1 : 0);
+        }
+        send(rr);
+    }
 
     private void logParcel(Parcel p) {
         StringBuffer s = new StringBuffer();
