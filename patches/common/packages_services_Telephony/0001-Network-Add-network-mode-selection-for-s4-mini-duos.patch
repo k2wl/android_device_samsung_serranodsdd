@@ -7,9 +7,7 @@ Change-Id: I667d40ac25dbf9bcf948d2706c2dab0d93c2b352
 Signed-off-by: k2wl <k2wl@github.com>
 ---
  res/values-ru/strings.xml                          | 16 +-----
- res/values/strings.xml                             | 57 ----------------------
- .../phone/msim/MSimMobileNetworkSubSettings.java   |  3 +-
- 5 files changed, 5 insertions(+), 103 deletions(-)
+ 1 files changed, 1 insertions(+), 15 deletions(-)
 
 diff --git a/res/values-ru/strings.xml b/res/values-ru/strings.xml
 index 1f2f816..9a60575 100644
@@ -38,101 +36,7 @@ index 1f2f816..9a60575 100644
      <string name="data_enabled" msgid="5972538663568715366">"Передача данных"</string>
      <string name="data_enable_summary" msgid="2382798156640007971">"Разрешить использование данных"</string>
      <string name="roaming" msgid="8871412572928323707">"Интернет-роуминг"</string>
-diff --git a/res/values/strings.xml b/res/values/strings.xml
-index 40a0aca..db1862b 100644
---- a/res/values/strings.xml
-+++ b/res/values/strings.xml
-@@ -527,25 +527,6 @@
-     <!-- In-call screen: status label for an incoming call that is not answered and forwarded  -->
-     <string name="callUnanswered_forwarded">Call Unanswered and Forwarded</string>
- 
--    <string name="preferred_network_mode_td_scdma_lte_gsm_wcdma_cdma_evdo_choice">TD-SCDMA/LTE/GSM/WCDMA/CDMA/EVDO</string>
--    <string name="preferred_network_mode_td_scdma_gsm_wcdma_cdma_evdo_choice">TD-SCDMA/GSM/WCDMA/CDMA/EVDO</string>
--    <string name="preferred_network_mode_td_scdma_gsm_wcdma_lte_choice">TD-SCDMA/GSM/WCDMA/LTE</string>
--    <string name="preferred_network_mode_td_scdma_wcdma_lte_choice">TD-SCDMA/WCDMA/LTE</string>
--    <string name="preferred_network_mode_td_scdma_gsm_wcdma_choice">TD-SCDMA/GSM/WCDMA</string>
--    <string name="preferred_network_mode_td_scdma_gsm_lte_choice">TD-SCDMA/GSM/LTE</string>
--    <string name="preferred_network_mode_td_scdma_gsm_choice">TD-SCDMA/GSM</string>
--    <string name="preferred_network_mode_td_scdma_lte_choice">TD-SCDMA/LTE</string>
--    <string name="preferred_network_mode_td_scdma_wcdma_choice">TD-SCDMA/WCDMA</string>
--    <string name="preferred_network_mode_td_scdma_only_choice">TD-SCDMA only</string>
--    <string name="preferred_network_mode_lte_wcdma_choice">LTE / WCDMA</string>
--    <string name="preferred_network_mode_lte_choice">LTE</string>
--    <string name="preferred_network_mode_global_choice">Global</string>
--    <string name="preferred_network_mode_gsm_wcdma_lte_choice">GSM/WCDMA/LTE</string>
--    <string name="preferred_network_mode_cdma_lte_evdo_choice">CDMA + LTE/EvDo</string>
--    <string name="preferred_network_mode_cdma_evdo_gsm_wcdma_choice">CDMA/EvDo/GSM/WCDMA</string>
--    <string name="preferred_network_mode_evdo_only_choice">EvDo only</string>
--    <string name="preferred_network_mode_cdma_wo_evdo_choice">CDMA w/o EvDo</string>
--    <string name="preferred_network_mode_cdma_evdo_auto_choice">CDMA/EvDo auto</string>
-     <string name="preferred_network_mode_gsm_wcdma_auto_choice">GSM/WCDMA auto</string>
-     <string name="preferred_network_mode_wcdma_only_choice">WCDMA only</string>
-     <string name="preferred_network_mode_gsm_only_choice">GSM only</string>
-@@ -553,50 +534,12 @@
- 
- 
-     <string-array name="preferred_network_mode_choices" translatable="false">
--        <item>@string/preferred_network_mode_td_scdma_lte_gsm_wcdma_cdma_evdo_choice </item>
--        <item>@string/preferred_network_mode_td_scdma_gsm_wcdma_cdma_evdo_choice</item>
--        <item>@string/preferred_network_mode_td_scdma_gsm_wcdma_lte_choice</item>
--        <item>@string/preferred_network_mode_td_scdma_wcdma_lte_choice</item>
--        <item>@string/preferred_network_mode_td_scdma_gsm_wcdma_choice</item>
--        <item>@string/preferred_network_mode_td_scdma_gsm_lte_choice</item>
--        <item>@string/preferred_network_mode_td_scdma_gsm_choice</item>
--        <item>@string/preferred_network_mode_td_scdma_lte_choice</item>
--        <item>@string/preferred_network_mode_td_scdma_wcdma_choice</item>
--        <item>@string/preferred_network_mode_td_scdma_only_choice</item>
--        <item>@string/preferred_network_mode_lte_wcdma_choice</item>
--        <item>@string/preferred_network_mode_lte_choice</item>
--        <item>@string/preferred_network_mode_global_choice</item>
--        <item>@string/preferred_network_mode_gsm_wcdma_lte_choice</item>
--        <item>@string/preferred_network_mode_cdma_lte_evdo_choice</item>
--        <item>@string/preferred_network_mode_cdma_evdo_gsm_wcdma_choice</item>
--        <item>@string/preferred_network_mode_evdo_only_choice</item>
--        <item>@string/preferred_network_mode_cdma_wo_evdo_choice</item>
--        <item>@string/preferred_network_mode_cdma_evdo_auto_choice</item>
-         <item>@string/preferred_network_mode_gsm_wcdma_auto_choice</item>
-         <item>@string/preferred_network_mode_wcdma_only_choice</item>
-         <item>@string/preferred_network_mode_gsm_only_choice</item>
-         <item>@string/preferred_network_mode_gsm_wcdma_preferred_choice</item>
-     </string-array>
-     <string-array name="preferred_network_mode_values"  translatable="false">
--        <item>"22"</item>
--        <item>"21"</item>
--        <item>"20"</item>
--        <item>"19"</item>
--        <item>"18"</item>
--        <item>"17"</item>
--        <item>"16"</item>
--        <item>"15"</item>
--        <item>"14"</item>
--        <item>"13"</item>
--        <item>"12"</item>
--        <item>"11"</item>
--        <item>"10"</item>
--        <item>"9"</item>
--        <item>"8"</item>
--        <item>"7"</item>
--        <item>"6"</item>
--        <item>"5"</item>
--        <item>"4"</item>
-         <item>"3"</item>
-         <item>"2"</item>
-         <item>"1"</item>
-diff --git a/src/com/android/phone/msim/MSimMobileNetworkSubSettings.java b/src/com/android/phone/msim/MSimMobileNetworkSubSettings.java
-index 3a5a23c..8a25faf 100644
---- a/src/com/android/phone/msim/MSimMobileNetworkSubSettings.java
-+++ b/src/com/android/phone/msim/MSimMobileNetworkSubSettings.java
-@@ -213,7 +213,8 @@ public class MSimMobileNetworkSubSettings extends PreferenceActivity
-         }
- 
-         boolean isLteOnCdma = mPhone.getLteOnCdmaMode() == PhoneConstants.LTE_ON_CDMA_TRUE;
--        if (getResources().getBoolean(R.bool.world_phone) == true) {
-+	boolean test_2g3g = true;
-+        if (test_2g3g) {
-             // set the listener for the mButtonPreferredNetworkMode list preference so we can issue
-             // change Preferred Network Mode.
-             mButtonPreferredNetworkMode.setOnPreferenceChangeListener(this);
+            mButtonPreferredNetworkMode.setOnPreferenceChangeListener(this);
 -- 
 1.9.1
 
