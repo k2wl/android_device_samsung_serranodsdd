@@ -31,3 +31,6 @@ TARGET_KERNEL_VARIANT_CONFIG := msm8930_serrano_eur_3g_defconfig
 
 # Radio/Ril class for i9192
 BOARD_RIL_CLASS := ../../../device/samsung/serranodsdd/ril
+
+# BLN
+BOARD_HAVE_GENERIC_BLN := true
