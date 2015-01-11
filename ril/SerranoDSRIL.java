@@ -95,9 +95,6 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
     private static final int RIL_UNSOL_ON_SS_I9192 = 1040;
     private static final int RIL_UNSOL_STK_CC_ALPHA_NOTIFY_I9192 = 1041;
     private static final int RIL_UNSOL_UICC_SUBSCRIPTION_STATUS_CHANGED_I9192 = 11031;
-    private Message mPendingGetSimStatus;
-
-
 
     public SerranoDSRIL(Context context, int networkMode, int cdmaSubscription,Integer instanceId) {
         super(context, networkMode, cdmaSubscription,  instanceId);
@@ -134,19 +131,6 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
 
         send(rr);
     }
-
-
-   @Override
-    public void getIccCardStatus(Message result) {
-        if (this.mState != RadioState.RADIO_ON) {
-            this.mPendingGetSimStatus = result;
-        } else {
-            super.getIccCardStatus(result);
-        }
-    }
-
-
-
 
     @Override
     protected Object
@@ -227,7 +211,7 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
             int np = p.readInt();
             dc.numberPresentation = DriverCall.presentationFromCLIP(np);
             dc.name = p.readString();
-            dc.namePresentation = p.readInt();
+            dc.namePresentation = DriverCall.presentationFromCLIP(p.readInt());
             int uusInfoPresent = p.readInt();
             if (uusInfoPresent == 1) {
                 dc.uusInfo = new UUSInfo();
@@ -466,16 +450,6 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
     }
 
    @Override
-    protected void switchToRadioState(RadioState newState) {
-        super.switchToRadioState(newState);
-        if (newState == RadioState.RADIO_ON && this.mPendingGetSimStatus != null) {
-            super.getIccCardStatus(this.mPendingGetSimStatus);
-            this.mPendingGetSimStatus = null;
-        }
-    }
-
-
-   @Override
     public void setUiccSubscription(int slotId, int appIndex, int subId,
             int subStatus, Message result) {
         //Note: This RIL request is also valid for SIM and RUIM (ICC card)
@@ -491,6 +465,20 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
         rr.mParcel.writeInt(subStatus);
 
         send(rr);
+    }
+
+
+    // This call causes ril to crash the socket, stopping further communication
+    @Override
+    public void
+    getHardwareConfig (Message result) {
+        riljLog("Ignoring call to 'getHardwareConfig'");
+        if (result != null) {
+            CommandException ex = new CommandException(
+                CommandException.Error.REQUEST_NOT_SUPPORTED);
+            AsyncResult.forMessage(result, null, ex);
+            result.sendToTarget();
+        }
     }
 
    @Override
@@ -522,4 +510,27 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
         }
         riljLog("parcel position=" + p.dataPosition() + ": " + s);
     }
+
+    @Override
+    public void getCellInfoList(Message result) {
+        riljLog("getCellInfoList: not supported");
+        if (result != null) {
+            CommandException ex = new CommandException(
+                CommandException.Error.REQUEST_NOT_SUPPORTED);
+            AsyncResult.forMessage(result, null, ex);
+            result.sendToTarget();
+        }
+    }
+
+    @Override
+    public void setCellInfoListRate(int rateInMillis, Message response) {
+        riljLog("setCellInfoListRate: not supported");
+        if (response != null) {
+            CommandException ex = new CommandException(
+                CommandException.Error.REQUEST_NOT_SUPPORTED);
+            AsyncResult.forMessage(response, null, ex);
+            response.sendToTarget();
+        }
+    }
+
 }
