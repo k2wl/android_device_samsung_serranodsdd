@@ -24,39 +24,12 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-import init.serranods.rc
-
 on boot
-    chown system system /sys/class/leds/button-backlight/brightness
 
-    # Permissions for bluetooth
-    setprop ro.bt.bdaddr_path "/efs/bluetooth/bt_addr"
-    chown bluetooth net_bt_stack ro.bt.bdaddr_path
-    chown bluetooth net_bt_stack /dev/ttyHS0
-    chmod 0660 /dev/ttyHS0
-    chmod 0660 /sys/class/rfkill/rfkill0/state
-    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
-    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
-
-    # Sensor - soft iron
-    write /sys/class/input/input4/static_matrix "9665 -302 -5 -268 10196 146 83 645 10159"
-    write /sys/class/input/input5/static_matrix "9665 -302 -5 -268 10196 146 83 645 10159"
-
-    # Enable ellipsoid for dynamic compensation
-    write /sys/class/input/input4/ellipsoid_mode 1
-    write /sys/class/input/input5/ellipsoid_mode 1
-
-    # Assign TCP buffer thresholds to be ceiling value of technology maximums
-    # Increased technology maximums should be reflected here.
-    write /proc/sys/net/core/rmem_max  2097152
-    write /proc/sys/net/core/wmem_max  2097152
-
-    # efs
-    mkdir /efs/drm 0700 system system
-    mkdir /efs/imei 0775 radio radio
-
-    # Backlight notification
-    chown system system /sys/class/misc/backlightnotification/enabled
-    chown system system /sys/class/misc/backlightnotification/blink_control
-    chown system system /sys/class/misc/backlightnotification/notification_led
-    restorecon /sys/class/misc/backlightnotification/enabled
+# for multi rild
+service ril-daemon2 /system/bin/rild -s rild2 -ds rild-debug1 -l /system/lib/libsec-ril-dsds.so
+    class main
+    socket rild2 stream 660 root radio
+    socket rild-debug1 stream 660 radio system
+    user root
+    group radio cache inet misc audio log qcom_diag sdcard_r shell sdcard_rw system drmrpc
