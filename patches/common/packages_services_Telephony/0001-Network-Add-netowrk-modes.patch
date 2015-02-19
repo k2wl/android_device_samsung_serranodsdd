@@ -12,8 +12,7 @@ Signed-off-by: k2wl <k2wl@github.com>
  res/values/cm_arrays.xml                           | 19 ---------------
  res/values/cm_strings.xml                          | 19 ---------------
  res/values/strings.xml                             | 28 ----------------------
- .../phone/msim/MSimMobileNetworkSubSettings.java   |  3 ++-
- 7 files changed, 2 insertions(+), 112 deletions(-)
+ 6 files changed, 111 deletions(-)
 
 diff --git a/res/values-en-rGB/strings.xml b/res/values-en-rGB/strings.xml
 index 0f33fe3..717d3dc 100644
@@ -198,20 +197,6 @@ index dbd4d60..8740bdc 100644
          <item>"3"</item>
          <item>"2"</item>
          <item>"1"</item>
-diff --git a/src/com/android/phone/msim/MSimMobileNetworkSubSettings.java b/src/com/android/phone/msim/MSimMobileNetworkSubSettings.java
-index 3a5a23c..be61f65 100644
---- a/src/com/android/phone/msim/MSimMobileNetworkSubSettings.java
-+++ b/src/com/android/phone/msim/MSimMobileNetworkSubSettings.java
-@@ -213,7 +213,8 @@ public class MSimMobileNetworkSubSettings extends PreferenceActivity
-         }
- 
-         boolean isLteOnCdma = mPhone.getLteOnCdmaMode() == PhoneConstants.LTE_ON_CDMA_TRUE;
--        if (getResources().getBoolean(R.bool.world_phone) == true) {
-+   boolean test_2g3g = true;
-+        if (test_2g3g) {
-             // set the listener for the mButtonPreferredNetworkMode list preference so we can issue
-             // change Preferred Network Mode.
-             mButtonPreferredNetworkMode.setOnPreferenceChangeListener(this);
 -- 
 1.9.1
 
