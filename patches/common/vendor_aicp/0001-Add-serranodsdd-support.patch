@@ -1,18 +1,17 @@
-From f6b877e9ae6ad14e1f38e2479531be99f2fdf495 Mon Sep 17 00:00:00 2001
+From a5e95624f171ad7d2d59123e5d7762fe86608b23 Mon Sep 17 00:00:00 2001
 From: k2wl <k2wl@github.com>
-Date: Sat, 21 Feb 2015 04:44:59 -0500
-Subject: [PATCH] Add serranodsdd s4 mini duos
+Date: Wed, 25 Mar 2015 19:35:16 +0530
+Subject: [PATCH] Add serranodsdd support
 
-Change-Id: If0bc131096ce69236072e4778f8289c69fbd87e6
 Signed-off-by: k2wl <k2wl@github.com>
 ---
  products/AndroidProducts.mk |  1 +
- products/serranodsdd.mk     | 20 ++++++++++++++++++++
- 2 files changed, 21 insertions(+)
+ products/serranodsdd.mk     | 15 +++++++++++++++
+ 2 files changed, 16 insertions(+)
  create mode 100644 products/serranodsdd.mk
 
 diff --git a/products/AndroidProducts.mk b/products/AndroidProducts.mk
-index 5d5edd6..8bd11ef 100644
+index eb69c7a..49a0f77 100644
 --- a/products/AndroidProducts.mk
 +++ b/products/AndroidProducts.mk
 @@ -1,4 +1,5 @@
@@ -20,22 +19,18 @@ index 5d5edd6..8bd11ef 100644
 +    $(LOCAL_DIR)/serranodsdd.mk \
      $(LOCAL_DIR)/a510.mk \
      $(LOCAL_DIR)/amami.mk \
-     $(LOCAL_DIR)/bacon.mk \
+     $(LOCAL_DIR)/ancora.mk \
 diff --git a/products/serranodsdd.mk b/products/serranodsdd.mk
 new file mode 100644
-index 0000000..d9cd7df
+index 0000000..a968111
 --- /dev/null
 +++ b/products/serranodsdd.mk
-@@ -0,0 +1,20 @@
+@@ -0,0 +1,15 @@
 +# Inherit common product files.
 +$(call inherit-product, vendor/aicp/configs/common.mk)
 +
-+# Inherit AOSP device configuration for serrano3gxx.
++# Inherit AOSP device configuration for serranodsdd.
 +$(call inherit-product, device/samsung/serranodsdd/full_serranodsdd.mk)
-+
-+# Device uses high-density artwork where available
-+PRODUCT_AAPT_CONFIG := normal hdpi
-+PRODUCT_AAPT_PREF_CONFIG := hdpi
 +
 +PRODUCT_BUILD_PROP_OVERRIDES += PRODUCT_NAME=serranodsxx TARGET_DEVICE=serranods BUILD_FINGERPRINT="samsung/serranodsxx/serranods:4.4.2/KOT49H/I9192XXUCNG2:user/release-keys" PRIVATE_BUILD_DESC="serranodsxx-user 4.4.2 KOT49H I9192XXUCNG2 release-keys"
 +
@@ -46,7 +41,6 @@ index 0000000..d9cd7df
 +TARGET_SCREEN_HEIGHT := 960
 +TARGET_SCREEN_WIDTH := 540
 +-include vendor/aicp/configs/bootanimation.mk
-+
 -- 
-2.1.0
+1.9.1
 
