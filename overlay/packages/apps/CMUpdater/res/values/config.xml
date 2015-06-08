@@ -8,5 +8,5 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- CMUpdate Config Strings -->
-    <string name="conf_update_server_url_def" translatable="false">http://cyanogenmodota.16mb.com/api34</string>
+    <string name="conf_update_server_url_def" translatable="false">http://cyanogenmodota.16mb.com/api2/</string>
 </resources>
