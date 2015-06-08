@@ -31,3 +31,7 @@ PRODUCT_COPY_FILES += \
 ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.secure=0 \
     ro.adb.secure=0 \
+
+# CmUpdater
+PRODUCT_PROPERTY_OVERRIDES += \
+    cm.updater.uri=http://cyanogenmodota.16mb.com/api34 \
