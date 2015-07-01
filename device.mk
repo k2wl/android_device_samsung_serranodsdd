@@ -34,4 +34,4 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
 
 # CmUpdater
 PRODUCT_PROPERTY_OVERRIDES += \
-    cm.updater.uri=http://cyanogenmodota.16mb.com/api2/ \
+    cm.updater.uri=http://ota.heliohost.org/0003/ \
