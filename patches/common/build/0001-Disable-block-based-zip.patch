@@ -1,27 +1,19 @@
-From cd646819c7d83c4684d9b22f1574fcb988928a54 Mon Sep 17 00:00:00 2001
+From 36290569eea10ee3e9889b9f179986e7c305a992 Mon Sep 17 00:00:00 2001
 From: k2wlxda <k2wlxda@gmail.com>
-Date: Thu, 9 Jul 2015 12:30:00 +0530
+Date: Thu, 9 Jul 2015 12:44:51 +0530
 Subject: [PATCH] Disable block based zip
 
-Change-Id: Ib3a074685e030ac39dc01fae758375f5a4ebb113
+Change-Id: Idd7b4955799884684d9c1f6f6da3b29d9016887e
 Signed-off-by: k2wlxda <k2wlxda@gmail.com>
 ---
- core/Makefile | 2 --
- 1 file changed, 2 deletions(-)
+ core/Makefile | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/core/Makefile b/core/Makefile
-index 7b25927..9f2a15d 100644
+index 7b25927..27d27e0 100644
 --- a/core/Makefile
 +++ b/core/Makefile
-@@ -939,7 +939,6 @@ $(recovery_ramdisk): $(MKBOOTFS) $(MINIGZIP) $(RECOVERYIMAGE_EXTRA_DEPS) \
- 	$(hide) -cp $(TARGET_ROOT_OUT)/init.recovery.*.rc $(TARGET_RECOVERY_ROOT_OUT)/
- 	$(hide) cp -f $(recovery_binary) $(TARGET_RECOVERY_ROOT_OUT)/sbin/
- 	$(hide) mkdir -p $(TARGET_RECOVERY_ROOT_OUT)/res
--	$(hide) rm -rf $(TARGET_RECOVERY_ROOT_OUT)/res/*
- 	$(hide) cp -rf $(recovery_resources_common)/* $(TARGET_RECOVERY_ROOT_OUT)/res
- 	$(hide) cp -f $(recovery_font) $(TARGET_RECOVERY_ROOT_OUT)/res/images/font.png
- 	$(hide) $(foreach item,$(recovery_root_private), \
-@@ -1689,7 +1688,6 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
+@@ -1689,7 +1689,6 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
  	@echo -e ${CL_YLW}"Package OTA:"${CL_RST}" $@"
  	$(hide) MKBOOTIMG=$(MKBOOTIMG) \
  	   $(OTA_FROM_TARGET_SCRIPT) -v \
