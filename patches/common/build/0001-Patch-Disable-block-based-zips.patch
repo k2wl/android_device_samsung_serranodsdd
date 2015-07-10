@@ -1,16 +1,17 @@
-From 36290569eea10ee3e9889b9f179986e7c305a992 Mon Sep 17 00:00:00 2001
+From 98e75d50f9ae6c925075e4cd55e63aee735e0dc6 Mon Sep 17 00:00:00 2001
 From: k2wlxda <k2wlxda@gmail.com>
-Date: Thu, 9 Jul 2015 12:44:51 +0530
-Subject: [PATCH] Disable block based zip
+Date: Fri, 10 Jul 2015 23:58:46 +0530
+Subject: [PATCH] Patch:Disable block based zips
 
-Change-Id: Idd7b4955799884684d9c1f6f6da3b29d9016887e
+Change-Id: I92906193e6b8e5ce0967c790597e9eadb3ac7541
 Signed-off-by: k2wlxda <k2wlxda@gmail.com>
 ---
- core/Makefile | 1 -
- 1 file changed, 1 deletion(-)
+ core/Makefile                      |  1 -
+ 1 files changed, 1 deletion(-)
+ create mode 100644 0001-Disable-block-based-zip.patch
 
 diff --git a/core/Makefile b/core/Makefile
-index 7b25927..27d27e0 100644
+index 496718c..089ece3 100644
 --- a/core/Makefile
 +++ b/core/Makefile
 @@ -1689,7 +1689,6 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
@@ -18,9 +19,9 @@ index 7b25927..27d27e0 100644
  	$(hide) MKBOOTIMG=$(MKBOOTIMG) \
  	   $(OTA_FROM_TARGET_SCRIPT) -v \
 -	   --block \
+ 	   $(if $(WITH_LZMA_OTA), -z) \
  	   -p $(HOST_OUT) \
  	   -k $(KEY_CERT_PAIR) \
- 	   --backup=$(backuptool) \
 -- 
 2.4.0
 
