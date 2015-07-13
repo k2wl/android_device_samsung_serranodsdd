@@ -28,8 +28,6 @@ TARGET_OTA_ASSERT_DEVICE := serranods,serranodsdd,serranodsub,serranodsxx,GT-I91
 
 # Kernel
 TARGET_KERNEL_VARIANT_CONFIG := msm8930_serrano_eur_3g_defconfig
-KERNEL_TOOLCHAIN_PREFIX := arm-eabi-
-KERNEL_TOOLCHAIN := "$(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_OS)-x86/arm/uber-arm-eabi-4.9/bin/"
 
 # Radio/Ril class for i9192
 BOARD_RIL_CLASS := ../../../device/samsung/serranodsdd/ril
