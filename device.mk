@@ -35,3 +35,8 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
 # CmUpdater
 PRODUCT_PROPERTY_OVERRIDES += \
     cm.updater.uri=http://ota.heliohost.org/0003/ \
+
+# Add google webview chromium prebuild packages
+PRODUCT_PACKAGES += \
+    libwebviewchromium_plat_support \
+    libwebviewchromium_loader

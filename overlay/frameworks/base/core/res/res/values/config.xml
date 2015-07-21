@@ -24,4 +24,11 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Is the device LTE capable -->
     <bool name="config_lte_capable">false</bool>
+
+    <!-- Package name providing default WebView implementation. -->
+    <string name="config_webViewPackageName" translatable="false">com.google.android.webview</string>
+
+    <!-- Package name providing alternate WebView implementation.
+         Fall back to config_webViewPackageName if not available. -->
+    <string name="config_alternateWebViewPackageName" translatable="false">com.android.webview</string>
 </resources>
