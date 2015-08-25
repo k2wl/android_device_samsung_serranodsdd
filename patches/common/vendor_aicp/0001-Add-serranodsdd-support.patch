@@ -11,15 +11,15 @@ Signed-off-by: k2wl <k2wl@github.com>
  create mode 100644 products/serranodsdd.mk
 
 diff --git a/products/AndroidProducts.mk b/products/AndroidProducts.mk
-index eb69c7a..49a0f77 100644
+index 7f451eb..e5d95ca 100644
 --- a/products/AndroidProducts.mk
 +++ b/products/AndroidProducts.mk
 @@ -1,4 +1,5 @@
  PRODUCT_MAKEFILES := \
 +    $(LOCAL_DIR)/serranodsdd.mk \
-     $(LOCAL_DIR)/a510.mk \
      $(LOCAL_DIR)/amami.mk \
-     $(LOCAL_DIR)/ancora.mk \
+     $(LOCAL_DIR)/armani.mk \
+     $(LOCAL_DIR)/bacon.mk \
 diff --git a/products/serranodsdd.mk b/products/serranodsdd.mk
 new file mode 100644
 index 0000000..a968111
