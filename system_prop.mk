@@ -12,3 +12,5 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	persist.radio.multisim.config=dsds \
 	persist.multisim.config=dsds \
     ro.telephony.ril_class=SerranoDSRIL \
+	ro.telephony.ril.config=simactivation \
+	ro.multisim.simslotcount=2 \
