@@ -22,13 +22,9 @@
 <!-- These resources are around just to allow their values to be customized
      for different hardware and product builds.  Do not translate. -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Is the device LTE capable -->
-    <bool name="config_lte_capable">false</bool>
-
-    <!-- Package name providing default WebView implementation. -->
-    <string name="config_webViewPackageName" translatable="false">com.google.android.webview</string>
-
-    <!-- Package name providing alternate WebView implementation.
-         Fall back to config_webViewPackageName if not available. -->
-    <string name="config_alternateWebViewPackageName" translatable="false">com.android.webview</string>
+    <!-- The RadioAccessFamilies supported by the device.
+         Empty is viewed as "all".  Only used on devices which
+         don't support RIL_REQUEST_GET_RADIO_CAPABILITY
+         format is UMTS|LTE|... -->
+    <string translatable="false" name="config_radio_access_family">GSM|WCDMA</string>
 </resources>

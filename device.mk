@@ -16,6 +16,9 @@
 # Inherit from serrano-common
 $(call inherit-product, device/samsung/serrano-common/serrano-common.mk)
 
+# call common serrano system props
+$(call inherit-product, device/samsung/serranodsdd/system_prop.mk)
+
 # Overlay
 DEVICE_PACKAGE_OVERLAYS += device/samsung/serranodsdd/overlay
 
@@ -26,17 +29,3 @@ PRODUCT_COPY_FILES += \
 # Ramdisk
 PRODUCT_COPY_FILES += \
     device/samsung/serranodsdd/init.carrier.rc:root/init.carrier.rc \
- 
-# Default.prop overrides to get adb working at boot   
-ADDITIONAL_DEFAULT_PROPERTIES += \
-    ro.secure=0 \
-    ro.adb.secure=0 \
-
-# CmUpdater
-PRODUCT_PROPERTY_OVERRIDES += \
-    cm.updater.uri=http://ota.heliohost.org/0003/ \
-
-# Add google webview chromium prebuild packages
-PRODUCT_PACKAGES += \
-    libwebviewchromium_plat_support \
-    libwebviewchromium_loader

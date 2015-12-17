@@ -96,9 +96,8 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
     private static final int RIL_UNSOL_STK_CC_ALPHA_NOTIFY_I9192 = 1041;
     private static final int RIL_UNSOL_UICC_SUBSCRIPTION_STATUS_CHANGED_I9192 = 11031;
 
-    public SerranoDSRIL(Context context, int networkMode, int cdmaSubscription,Integer instanceId) {
-        super(context, networkMode, cdmaSubscription,  instanceId);
-        mQANElements = 6;
+    public SerranoDSRIL(Context context, int preferredNetworkType, int cdmaSubscription,Integer instanceId) {
+        super(context, preferredNetworkType, cdmaSubscription,  instanceId);
     }
 
 
@@ -533,4 +532,14 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
         }
     }
 
+
+    @Override
+    public void getRadioCapability(Message response) {
+        riljLog("getRadioCapability: returning static radio capability");
+        if (response != null) {
+            Object ret = makeStaticRadioCapability();
+            AsyncResult.forMessage(response, ret, null);
+            response.sendToTarget();
+        }
+    }
 }
