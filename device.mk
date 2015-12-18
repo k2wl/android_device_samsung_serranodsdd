@@ -16,9 +16,6 @@
 # Inherit from serrano-common
 $(call inherit-product, device/samsung/serrano-common/serrano-common.mk)
 
-# call common serrano system props
-$(call inherit-product, device/samsung/serranodsdd/system_prop.mk)
-
 # Overlay
 DEVICE_PACKAGE_OVERLAYS += device/samsung/serranodsdd/overlay
 
