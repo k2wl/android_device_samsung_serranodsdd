@@ -16,7 +16,7 @@ index 80d21be..61e465c 100644
  
  static selinux_enforcing_status selinux_status_from_cmdline() {
 -    selinux_enforcing_status status = SELINUX_ENFORCING;
-+    selinux_enforcing_status status = SELINUX_DISABLED;
++    selinux_enforcing_status status = SELINUX_PERMISSIVE;
  
      std::function<void(char*,bool)> fn = [&](char* name, bool in_qemu) {
          char *value = strchr(name, '=');
