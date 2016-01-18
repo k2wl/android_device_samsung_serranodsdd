@@ -96,8 +96,17 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
     private static final int RIL_UNSOL_STK_CC_ALPHA_NOTIFY_I9192 = 1041;
     private static final int RIL_UNSOL_UICC_SUBSCRIPTION_STATUS_CHANGED_I9192 = 11031;
 
-    public SerranoDSRIL(Context context, int preferredNetworkType, int cdmaSubscription,Integer instanceId) {
-        super(context, preferredNetworkType, cdmaSubscription,  instanceId);
+	public SerranoDSRIL(Context context, int networkModes, int cdmaSubscription) {
+        this(context, networkModes, cdmaSubscription, null);
+        mAudioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+        mQANElements = SystemProperties.getInt("ro.ril.telephony.mqanelements", 4);
+    }
+
+    public SerranoDSRIL(Context context, int preferredNetworkType,
+            int cdmaSubscription, Integer instanceId) {
+        super(context, preferredNetworkType, cdmaSubscription, instanceId);
+        mAudioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+        mQANElements = SystemProperties.getInt("ro.ril.telephony.mqanelements", 4);
     }
 
 
@@ -448,6 +457,23 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
         send(rr);
     }
 
+   @Override	
+	public void setUiccSubscription(int appIndex, boolean activate, Message result) {
+        //Note: This RIL request is also valid for SIM and RUIM (ICC card)
+        RILRequest rr = RILRequest.obtain(115, result);
+
+        if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest)
+                + " appIndex: " + appIndex + " activate: " + activate);
+
+        rr.mParcel.writeInt(mInstanceId);
+        rr.mParcel.writeInt(appIndex);
+        rr.mParcel.writeInt(mInstanceId);
+        rr.mParcel.writeInt(activate ? 1 : 0);
+
+        send(rr);
+    }
+
+
     // This call causes ril to crash the socket, stopping further communication
     @Override
     public void
@@ -513,14 +539,4 @@ public class SerranoDSRIL extends RIL implements CommandsInterface {
         }
     }
 
-
-    @Override
-    public void getRadioCapability(Message response) {
-        riljLog("getRadioCapability: returning static radio capability");
-        if (response != null) {
-            Object ret = makeStaticRadioCapability();
-            AsyncResult.forMessage(response, ret, null);
-            response.sendToTarget();
-        }
-    }
 }
