@@ -1,7 +1,7 @@
 From 6c7af2ddaa10eba6b10a729d3b095a6131c00638 Mon Sep 17 00:00:00 2001
 From: k2wl <kar2wlan@gmail.com>
 Date: Fri, 18 Dec 2015 08:15:36 +0530
-Subject: [PATCH] Remove SerranoRIL Prop
+Subject: [IGNORE THIS PATCH] Remove SerranoRIL Prop
 
 Signed-off-by: k2wl <kar2wlan@gmail.com>
 ---
