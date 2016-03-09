@@ -1,7 +1,7 @@
 From 494a885566098bf9bc69e40a1dcd36a41fc9a394 Mon Sep 17 00:00:00 2001
 From: k2wl <k2wl@github.com>
 Date: Wed, 7 Jan 2015 08:29:10 +0530
-Subject: [PATCH] Add support for serranodsril
+Subject: [IGNORE THIS PATCH] Add support for serranodsril
 
 Change-Id: I10ada45f18ed90824da7f7a21a3edfabed9b5984
 Signed-off-by: k2wl <k2wl@github.com>

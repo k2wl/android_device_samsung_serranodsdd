@@ -1,7 +1,7 @@
 From 98e75d50f9ae6c925075e4cd55e63aee735e0dc6 Mon Sep 17 00:00:00 2001
 From: k2wlxda <k2wlxda@gmail.com>
 Date: Fri, 10 Jul 2015 23:58:46 +0530
-Subject: [PATCH] Patch:Disable block based zips
+Subject: [IGNORE THIS PATCH] Disable block based zips
 
 Change-Id: I92906193e6b8e5ce0967c790597e9eadb3ac7541
 Signed-off-by: k2wlxda <k2wlxda@gmail.com>
