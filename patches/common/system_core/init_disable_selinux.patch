@@ -1,7 +1,7 @@
 From 75ec82ede464448f429492345cc871db9d686ca7 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sun, 11 Oct 2015 21:11:25 +0700
-Subject: [PATCH 11/11] HACK: temporarily change SELinux to permissive
+Subject: [IGNORE THIS PATCH 11/11] HACK: temporarily change SELinux to permissive
 
 ---
  init/init.cpp | 2 +-
