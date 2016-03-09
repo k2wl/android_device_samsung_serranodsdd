@@ -1,7 +1,7 @@
 From 8e3d4d6db27895f2186505a42500ef65f05367c9 Mon Sep 17 00:00:00 2001
 From: k2wl <k2wl@github.com>
 Date: Thu, 22 Jan 2015 12:10:13 +0530
-Subject: [PATCH] Network:Add netowrk modes
+Subject: [IGNORE THIS PATCH] Network:Add network modes
 
 Change-Id: I71bc2b30ef60573d0377600f820a6bab9910942f
 Signed-off-by: k2wl <k2wl@github.com>
