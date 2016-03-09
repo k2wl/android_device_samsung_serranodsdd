@@ -1,7 +1,7 @@
 From 8e9d34326128ec2b39e543e016ec21342d1c3deb Mon Sep 17 00:00:00 2001
 From: mickybart <mickybart@pygoscelis.org>
 Date: Tue, 13 Oct 2015 22:53:50 -0400
-Subject: [PATCH] add writeString16 with uint16_t for ABI compatibility 1/2
+Subject: [IGNORE THIS PATCH] Add writeString16 with uint16_t for ABI compatibility 1/2
 
 ---
  include/binder/Parcel.h                 |  1 +

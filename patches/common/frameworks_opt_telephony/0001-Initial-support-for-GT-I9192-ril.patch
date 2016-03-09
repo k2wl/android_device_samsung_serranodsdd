@@ -1,7 +1,7 @@
 From c2966722379a4b7197b6c254edbf64188da9c4df Mon Sep 17 00:00:00 2001
 From: k2wl <k2wl@github.com>
 Date: Thu, 20 Nov 2014 08:01:49 +0530
-Subject: [PATCH] initial support for i9192 ril
+Subject: [IGNORE THIS PATCH] Initial support for GT-I9192 ril
 
 Change-Id: I51b2a06d648c72f6b10c866ab1bb8516f0ca2202
 Signed-off-by: k2wl <k2wl@github.com>
