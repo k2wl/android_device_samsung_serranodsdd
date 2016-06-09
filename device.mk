@@ -26,6 +26,7 @@ PRODUCT_COPY_FILES += \
 # Ramdisk
 PRODUCT_COPY_FILES += \
     device/samsung/serranodsdd/init.carrier.rc:root/init.carrier.rc \
+    device/samsung/serranodsdd/init.class_main.sh:root/init.class_main.sh
 
 # For userdebug builds
 ADDITIONAL_DEFAULT_PROPERTIES += \

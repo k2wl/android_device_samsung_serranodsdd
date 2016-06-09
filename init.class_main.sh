@@ -1,4 +1,5 @@
-# Copyright (c) 2009-2012, Code Aurora Forum. All rights reserved.
+#!/system/bin/sh
+# Copyright (c) 2013, The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -7,7 +8,7 @@
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in the
 #       documentation and/or other materials provided with the distribution.
-#     * Neither the name of Code Aurora nor
+#     * Neither the name of The Linux Foundation nor
 #       the names of its contributors may be used to endorse or promote
 #       products derived from this software without specific prior written
 #       permission.
@@ -24,18 +25,11 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-on post-fs-data
 
-service qcom-c_main-sh /system/bin/sh /init.class_main.sh
-    class late_start
-    user root
-    oneshot
-    
-# for multi rild
-service ril-daemon2 /system/bin/rild -s rild2 -ds rild-debug1 -l /system/lib/libsec-ril-dsds.so
-    class main
-    socket rild2 stream 660 root radio
-    socket rild-debug1 stream 660 radio system
-    user root
-    disabled 
-    group radio cache inet misc audio log qcom_diag sdcard_r shell sdcard_rw system drmrpc
+#
+# start ril-daemon only for targets on which radio is present
+#
+multisim=`getprop persist.radio.multisim.config`
+if [ "$multisim" = "dsds" ] || [ "$multisim" = "dsda" ]; then
+    start ril-daemon2
+fi
