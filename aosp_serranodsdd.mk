@@ -19,7 +19,7 @@
 PRODUCT_COPY_FILES := device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.xml
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
-$(call inherit-product, device/samsung/serranodsdd/device_serranodsdd.mk)
+$(call inherit-product, device/samsung/serranodsdd/device.mk)
 
 # Overlay and packages usually set by vendor/cm
 DEVICE_PACKAGE_OVERLAYS += device/samsung/serranodsdd/overlay2
