@@ -20,6 +20,11 @@
 # definition file).
 #
 
+TARGET_SPECIFIC_HEADER_PATH := device/samsung/serranodsdd/include
+
+# Assert
+TARGET_OTA_ASSERT_DEVICE := serranods,serranodsdd,serranodsub,serranodsxx,GT-I9192
+
 BOARD_VENDOR := samsung
 
 # Bootloader
@@ -35,10 +40,7 @@ TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
 TARGET_ARCH_VARIANT := armv7-a-neon
 
-TARGET_SPECIFIC_HEADER_PATH := device/samsung/serranodsdd/include
-
-# Assert
-TARGET_OTA_ASSERT_DEVICE := serranods,serranodsdd,serranodsub,serranodsxx,GT-I9192
+TARGET_BOOTLOADER_BOARD_NAME := MSM8960
 
 # Kernel
 BOARD_KERNEL_CMDLINE         := androidboot.hardware=qcom user_debug=22 msm_rtb.filter=0x3F ehci-hcd.park=3 androidboot.bootdevice=msm_sdcc.1
@@ -51,35 +53,50 @@ TARGET_KERNEL_CONFIG         := cyanogen_serrano_usa_defconfig
 else
 TARGET_KERNEL_CONFIG         := cyanogen_serrano_defconfig
 endif
-
 TARGET_KERNEL_VARIANT_CONFIG := msm8930_serrano_eur_3g_defconfig
-
-TARGET_BOOTLOADER_BOARD_NAME := MSM8960
-
-# Recovery
-TARGET_RECOVERY_FSTAB := device/samsung/serranodsdd/rootdir/fstab.qcom
-TARGET_RECOVERY_DEVICE_DIRS += device/samsung/serranodsdd
-TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
-BOARD_HAS_DOWNLOAD_MODE := true
-
-# Reduce space taken by the journal
-BOARD_SYSTEMIMAGE_JOURNAL_SIZE := 0
-
-TARGET_USERIMAGES_USE_EXT4 := true
-TARGET_USERIMAGES_USE_F2FS := true
-BOARD_BOOTIMAGE_PARTITION_SIZE := 10485760
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := 10485760
-BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1572864000
-BOARD_USERDATAIMAGE_PARTITION_SIZE := 5821660160
-BOARD_CACHEIMAGE_PARTITION_SIZE := 209715200
-BOARD_FLASH_BLOCK_SIZE := 131072
 
 # Bluetooth
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/serranodsdd/bluetooth
+BOARD_HAVE_BLUETOOTH := true
+BOARD_HAVE_BLUETOOTH_QCOM := true
+BLUETOOTH_HCI_USE_MCT := true
+
+# Camera
+TARGET_PROVIDES_CAMERA_HAL := true
+USE_DEVICE_SPECIFIC_CAMERA := true
+
+# Charger
+BOARD_BATTERY_DEVICE_NAME := "battery"
+BOARD_CHARGING_CMDLINE_NAME := "androidboot.bootchg"
+BOARD_CHARGING_CMDLINE_VALUE := "true"
+
+# Display
+NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
+
+# Renderscript
+OVERRIDE_RS_DRIVER := libRSDriver_adreno.so
+
+# Lights
+TARGET_PROVIDES_LIBLIGHT := true
+
+# Include an expanded selection of fonts
+EXTENDED_FONT_FOOTPRINT := true
+
+# Shader cache config options
+# Maximum size of the  GLES Shaders that can be cached for reuse.
+# Increase the size if shaders of size greater than 12KB are used.
+MAX_EGL_CACHE_KEY_SIZE := 12*1024
+
+# Maximum GLES shader cache size for each app to store the compiled shader
+# binaries. Decrease the size if RAM or Flash Storage size is a limitation
+# of the device.
+MAX_EGL_CACHE_SIZE := 2048*1024
 
 # Audio
+BOARD_USES_GENERIC_AUDIO := false
 AUDIO_USE_LL_AS_PRIMARY_OUTPUT := true
 USE_CUSTOM_AUDIO_POLICY := 1
+BOARD_USES_ALSA_AUDIO := true
 
 # FM
 AUDIO_FEATURE_ENABLED_FM_POWER_OPT := true
@@ -121,45 +138,6 @@ BOARD_HAVE_GENERIC_BLN := true
 # Disable Block Based OTA
 BLOCK_BASED_OTA=false
 
-# Audio
-BOARD_USES_ALSA_AUDIO := true
-
-# Bluetooth
-BOARD_HAVE_BLUETOOTH := true
-BOARD_HAVE_BLUETOOTH_QCOM := true
-BLUETOOTH_HCI_USE_MCT := true
-
-# Camera
-TARGET_PROVIDES_CAMERA_HAL := true
-USE_DEVICE_SPECIFIC_CAMERA := true
-
-# Charger
-BOARD_BATTERY_DEVICE_NAME := "battery"
-BOARD_CHARGING_CMDLINE_NAME := "androidboot.bootchg"
-BOARD_CHARGING_CMDLINE_VALUE := "true"
-
-# Display
-NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
-
-# Renderscript
-OVERRIDE_RS_DRIVER := libRSDriver_adreno.so
-
-# Lights
-TARGET_PROVIDES_LIBLIGHT := true
-
-# Include an expanded selection of fonts
-EXTENDED_FONT_FOOTPRINT := true
-
-# Shader cache config options
-# Maximum size of the  GLES Shaders that can be cached for reuse.
-# Increase the size if shaders of size greater than 12KB are used.
-MAX_EGL_CACHE_KEY_SIZE := 12*1024
-
-# Maximum GLES shader cache size for each app to store the compiled shader
-# binaries. Decrease the size if RAM or Flash Storage size is a limitation
-# of the device.
-MAX_EGL_CACHE_SIZE := 2048*1024
-
 # Wifi driver
 BOARD_HAS_QCOM_WLAN              := true
 BOARD_WLAN_DEVICE                := qcwcn
@@ -173,3 +151,21 @@ TARGET_USES_WCNSS_CTRL           := true
 WPA_SUPPLICANT_VERSION           := VER_0_8_X
 WIFI_DRIVER_FW_PATH_STA          := "sta"
 WIFI_DRIVER_FW_PATH_AP           := "ap"
+
+# Recovery
+TARGET_RECOVERY_FSTAB := device/samsung/serranodsdd/rootdir/fstab.qcom
+TARGET_RECOVERY_DEVICE_DIRS += device/samsung/serranodsdd
+TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
+BOARD_HAS_DOWNLOAD_MODE := true
+
+# Reduce space taken by the journal
+BOARD_SYSTEMIMAGE_JOURNAL_SIZE := 0
+
+TARGET_USERIMAGES_USE_EXT4 := true
+TARGET_USERIMAGES_USE_F2FS := true
+BOARD_BOOTIMAGE_PARTITION_SIZE := 10485760
+BOARD_RECOVERYIMAGE_PARTITION_SIZE := 10485760
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1572864000
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 5821660160
+BOARD_CACHEIMAGE_PARTITION_SIZE := 209715200
+BOARD_FLASH_BLOCK_SIZE := 131072
