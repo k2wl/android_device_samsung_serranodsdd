@@ -1,0 +1,10 @@
+allow shell blkid_exec:file { getattr };
+allow shell bootanim_exec:file { getattr };
+allow shell btsnoop_exec:file { getattr };
+allow shell clatd_exec:file { getattr };
+allow shell debuggerd_exec:file { getattr };
+allow shell dhcp_exec:file { getattr };
+allow shell perfprofd_exec:file { getattr };
+allow shell vold_exec:file { getattr };
+allow shell vdc_exec:file { getattr };
+

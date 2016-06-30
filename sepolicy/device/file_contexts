@@ -1,0 +1,36 @@
+/efs/bluetooth(/.*)?		u:object_r:bluetooth_efs_file:s0
+/efs/wifi(/.*)?			u:object_r:wifi_efs_file:s0
+
+# Block labeling
+/dev/block/platform/msm_sdcc\.1/by-name/efs				u:object_r:efs_block_device:s0
+/dev/block/platform/msm_sdcc\.1/by-name/persist				u:object_r:persist_block_device:s0
+/dev/block/platform/msm_sdcc\.1/by-name/boot				u:object_r:boot_block_device:s0
+/dev/block/platform/msm_sdcc\.1/by-name/system				u:object_r:system_block_device:s0
+/dev/block/platform/msm_sdcc\.1/by-name/recovery			u:object_r:recovery_block_device:s0
+/dev/block/platform/msm_sdcc\.1/by-name/modem				u:object_r:modem_efs_partition_device:s0
+/dev/block/platform/msm_sdcc\.1/by-name/misc				u:object_r:misc_partition:s0
+/dev/block/platform/msm_sdcc\.1/by-name/userdata			u:object_r:userdata_block_device:s0
+/dev/block/platform/msm_sdcc\.1/by-name/cache				u:object_r:cache_block_device:s0
+
+/dev/audience_a2220		u:object_r:audio_device:s0
+
+/data/cam_socket(.*)		u:object_r:camera_socket:s0
+/dev/gemini.*			u:object_r:camera_device:s0
+
+/data/system/default_values	u:object_r:mpctl_data_file:s0
+
+/data/system/yas.cfg		u:object_r:geomagneticd_data_file:s0
+/data/system/yas-backup.cfg	u:object_r:geomagneticd_data_file:s0
+
+/dev/bcm2079x			u:object_r:nfc_device:s0
+/dev/pn547			u:object_r:nfc_device:s0
+
+/dev/socket/mpctl		u:object_r:mpctl_socket:s0
+
+/dev/alps_io			u:object_r:sensors_device:s0
+
+/system/bin/insthk		u:object_r:insthk_exec:s0
+/system/bin/geomagneticd	u:object_r:geomagneticd_exec:s0
+
+/sys/devices/virtual/misc/backlightnotification(/.*)?	u:object_r:sysfs_bln:s0
+/sys/devices/virtual/sec/sec_touchkey/touchkey_enable	u:object_r:sysfs_keypad:s0

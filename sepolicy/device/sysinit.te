@@ -1,0 +1,1 @@
+allow sysinit sysfs_bln: file rw_file_perms;

@@ -1,0 +1,5 @@
+allow system_app shell_data_file:dir search;
+allow system_app sysfs_bln:dir search;
+allow system_app sysfs_bln:file rw_file_perms;
+allow system_app sysfs_bln:lnk_file read;
+allow system_app sysfs_keypad:file rw_file_perms;
