@@ -1,0 +1,47 @@
+From 51fb3e2fb05c1748ab2c7346c7c32c98eb9446b1 Mon Sep 17 00:00:00 2001
+From: k2wl <kar2wlan@gmail.com>
+Date: Sat, 2 Jul 2016 09:25:51 +0530
+Subject: [PATCH 3/3] kernel
+
+Change-Id: I582c2d2a0f66f03053fbebd6ee4f019d197bfe74
+Signed-off-by: k2wl <kar2wlan@gmail.com>
+---
+ core/envsetup.mk                             | 4 ++++
+ tools/releasetools/sign_target_files_apks.py | 4 ++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/core/envsetup.mk b/core/envsetup.mk
+index 0a7472a..8da62fc 100644
+--- a/core/envsetup.mk
++++ b/core/envsetup.mk
+@@ -198,8 +198,12 @@ endif
+ 
+ ifeq (,$(strip $(OUT_DIR)))
+ ifeq (,$(strip $(OUT_DIR_COMMON_BASE)))
++ifneq ($(TOPDIR),)
+ OUT_DIR := $(TOPDIR)out
+ else
++OUT_DIR := $(CURDIR)/out
++endif
++else
+ OUT_DIR := $(OUT_DIR_COMMON_BASE)/$(notdir $(PWD))
+ endif
+ endif
+diff --git a/tools/releasetools/sign_target_files_apks.py b/tools/releasetools/sign_target_files_apks.py
+index f758ae0..3e8fba7 100755
+--- a/tools/releasetools/sign_target_files_apks.py
++++ b/tools/releasetools/sign_target_files_apks.py
+@@ -242,6 +242,10 @@ def ProcessTargetFiles(input_tf_zip, output_tf_zip, misc_info,
+       print "rewriting %s with new keys." % (info.filename,)
+       new_data = ReplaceCerts(data)
+       common.ZipWriteStr(output_tf_zip, out_info, new_data)
++    elif info.filename.startswith("SYSTEM/etc/permissions/"):
++      print("rewriting %s with new keys." % info.filename)
++      new_data = ReplaceCerts(data)
++      common.ZipWriteStr(output_tf_zip, out_info, new_data)
+     elif info.filename in ("SYSTEM/recovery-from-boot.p",
+                            "SYSTEM/etc/recovery.img",
+                            "SYSTEM/bin/install-recovery.sh"):
+-- 
+1.9.1
+

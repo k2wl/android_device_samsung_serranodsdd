@@ -1,0 +1,191 @@
+From a02bdd91792f4b775cf451da2f9acfdcdea2ea3e Mon Sep 17 00:00:00 2001
+From: k2wl <kar2wlan@gmail.com>
+Date: Wed, 29 Jun 2016 08:00:22 +0530
+Subject: [PATCH 1/2] remove sepolicy compilation errors
+
+Change-Id: I7ed93fc5834f049f1a89585030b0d78cd4ddcd67
+Signed-off-by: k2wl <kar2wlan@gmail.com>
+---
+ Android.mk       |  2 +-
+ domain.te        | 41 ++++++++++++++++++-----------------------
+ keystore.te      |  9 +++++++--
+ recovery.te      | 10 ++++++++--
+ su.te            |  1 +
+ system_server.te |  5 ++++-
+ vold.te          | 18 +++++++++++++-----
+ 7 files changed, 52 insertions(+), 34 deletions(-)
+
+diff --git a/Android.mk b/Android.mk
+index d5b8a4d..2b32cb6 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -28,7 +28,7 @@ endif
+ 
+ # Builds paths for all policy files found in BOARD_SEPOLICY_DIRS and the LOCAL_PATH.
+ # $(1): the set of policy name paths to build
+-build_policy = $(foreach type, $(1), $(foreach file, $(addsuffix /$(type), $(LOCAL_PATH) $(BOARD_SEPOLICY_DIRS)), $(sort $(wildcard $(file)))))
++build_policy = $(call uniq, $(foreach type, $(1), $(foreach file, $(addsuffix /$(type), $(LOCAL_PATH) $(BOARD_SEPOLICY_DIRS)), $(sort $(wildcard $(file)))))
+ 
+ # Builds paths for all policy files found in BOARD_SEPOLICY_DIRS.
+ # $(1): the set of policy name paths to build
+diff --git a/domain.te b/domain.te
+index 4ecca7e..fa6403c 100644
+--- a/domain.te
++++ b/domain.te
+@@ -358,21 +358,17 @@ neverallow {
+ neverallow { domain -servicemanager } *:binder set_context_mgr;
+ 
+ # Only authorized processes should be writing to files in /data/dalvik-cache
+-neverallow {
+-  domain
+-  -init # TODO: limit init to relabelfrom for files
+-  -zygote
+-  -installd
+-  -dex2oat
+-} dalvikcache_data_file:file no_w_file_perms;
+-
+-neverallow {
+-  domain
+-  -init
+-  -installd
+-  -dex2oat
+-  -zygote
+-} dalvikcache_data_file:dir no_w_dir_perms;
++ifelse(shipping_build, `true',
++  `neverallow { domain -init -zygote -installd -dex2oat } dalvikcache_data_file:file no_w_file_perms;'
++,
++  `neverallow { domain -init -zygote -installd -dex2oat -system_server -recovery} dalvikcache_data_file:file no_w_file_perms;'
++)
++
++ifelse(shipping_build, `true',
++  `neverallow { domain -init -installd -dex2oat -zygote } dalvikcache_data_file:dir no_w_dir_perms;'
++,
++  `neverallow { domain -init -installd -dex2oat -zygote -recovery } dalvikcache_data_file:dir no_w_dir_perms;'
++)
+ 
+ # Only system_server should be able to send commands via the zygote socket
+ neverallow { domain -zygote -system_server } zygote:unix_stream_socket connectto;
+@@ -403,7 +399,7 @@ neverallow * { file_type fs_type dev_type }:{ lnk_file fifo_file sock_file } mou
+ # Nobody should be able to execute su on user builds.
+ # On userdebug/eng builds, only dumpstate, shell, and
+ # su itself execute su.
+-neverallow { domain userdebug_or_eng(`-dumpstate -shell -su') } su_exec:file no_x_file_perms;
++neverallow { domain userdebug_or_eng(`-dumpstate -shell -su -init -untrusted_app -sudaemon') } su_exec:file no_x_file_perms;
+ 
+ # Do not allow the introduction of new execmod rules. Text relocations
+ # and modification of executable pages are unsafe.
+@@ -444,13 +440,12 @@ neverallow ~domain domain:process { transition dyntransition };
+ # Example type transition:
+ #  mydomain.te:file_type_auto_trans(mydomain, system_data_file, new_file_type)
+ #
+-neverallow {
+-  domain
+-  -system_server
+-  -system_app
+-  -init
+-  -installd # for relabelfrom and unlink, check for this in explicit neverallow
+-} system_data_file:file no_w_file_perms;
++ifelse(shipping_build, `true',
++  `neverallow { domain -system_server -system_app -init -installd } system_data_file:file no_w_file_perms;'
++,
++  `neverallow { domain -system_server -system_app -init -installd -recovery } system_data_file:file no_w_file_perms;'
++)
++
+ # do not grant anything greater than r_file_perms and relabelfrom unlink
+ # to installd
+ neverallow installd system_data_file:file ~{ r_file_perms relabelfrom unlink };
+diff --git a/keystore.te b/keystore.te
+index 9dca43c..02e1630 100644
+--- a/keystore.te
++++ b/keystore.te
+@@ -26,7 +26,12 @@ selinux_check_access(keystore)
+ neverallow { domain -keystore } keystore_data_file:dir ~{ open create read getattr setattr search relabelto ioctl };
+ neverallow { domain -keystore } keystore_data_file:notdevfile_class_set ~{ relabelto getattr };
+ 
+-neverallow { domain -keystore -init } keystore_data_file:dir *;
+-neverallow { domain -keystore -init } keystore_data_file:notdevfile_class_set *;
++ifelse(shipping_build, `true',
++  `neverallow { domain -keystore -init } keystore_data_file:dir *;
++   neverallow { domain -keystore -init } keystore_data_file:notdevfile_class_set *;'
++,
++  `neverallow { domain -keystore -init -recovery } keystore_data_file:dir *;
++   neverallow { domain -keystore -init -recovery } keystore_data_file:notdevfile_class_set *;'
++)
+ 
+ neverallow * keystore:process ptrace;
+diff --git a/recovery.te b/recovery.te
+index d5767ed..59337e8 100644
+--- a/recovery.te
++++ b/recovery.te
+@@ -117,5 +117,11 @@ recovery_only(`
+ # domains, including recovery.
+ #
+ # TODO: tighten this up further.
+-neverallow recovery data_file_type:file { no_w_file_perms no_x_file_perms };
+-neverallow recovery data_file_type:dir no_w_dir_perms;
++ifelse(shipping_build, `true',
++  `neverallow recovery data_file_type:file { no_w_file_perms no_x_file_perms };'
++,
++)
++ifelse(shipping_build, `true',
++  `neverallow recovery data_file_type:dir no_w_dir_perms;'
++,
++)
+diff --git a/su.te b/su.te
+index 5c98258..72e5ca0 100644
+--- a/su.te
++++ b/su.te
+@@ -1,5 +1,6 @@
+ # File types must be defined for file_contexts.
+ type su_exec, exec_type, file_type;
++type sudaemon, domain;
+ 
+ userdebug_or_eng(`
+   # Domain used for su processes, as well as for adbd and adb shell
+diff --git a/system_server.te b/system_server.te
+index fb864ca..5d34f6a 100644
+--- a/system_server.te
++++ b/system_server.te
+@@ -477,7 +477,10 @@ neverallow system_server *:process { transition dyntransition };
+ # a bug (for example, bug 16317188), or represents an attempt by
+ # system server to dynamically load a dex file, something we do not
+ # want to allow.
+-neverallow system_server dex2oat_exec:file no_x_file_perms;
++ifelse(shipping_build, `true',
++  `neverallow system_server dex2oat_exec:file no_x_file_perms;'
++,
++)
+ 
+ # system_server should never execute or load executable shared libraries
+ # in /data except for /data/dalvik-cache files.
+diff --git a/vold.te b/vold.te
+index 737037d..b051b58 100644
+--- a/vold.te
++++ b/vold.te
+@@ -184,10 +184,18 @@ allow vold sysfs_zram_uevent:file rw_file_perms;
+ # MoveTask.cpp executes cp and rm
+ allow vold toolbox_exec:file rx_file_perms;
+ 
+-neverallow { domain -vold } vold_data_file:dir ~{ open create read getattr setattr search relabelto ioctl };
+-neverallow { domain -vold } vold_data_file:notdevfile_class_set ~{ relabelto getattr };
+-neverallow { domain -vold -init } vold_data_file:dir *;
+-neverallow { domain -vold -init } vold_data_file:notdevfile_class_set *;
+-neverallow { domain -vold -init } restorecon_prop:property_service set;
++ifelse(shipping_build, `true',
++  `neverallow { domain -vold } vold_data_file:dir ~{ open create read getattr setattr search relabelto ioctl };
++   neverallow { domain -vold } vold_data_file:notdevfile_class_set ~{ relabelto getattr };
++   neverallow { domain -vold -init } vold_data_file:dir *;
++   neverallow { domain -vold -init } vold_data_file:notdevfile_class_set *;
++   neverallow { domain -vold -init } restorecon_prop:property_service set;'
++,
++   `neverallow { domain -vold -recovery } vold_data_file:dir ~{ open create read getattr setattr search relabelto ioctl };
++    neverallow { domain -vold -recovery } vold_data_file:notdevfile_class_set ~{ relabelto getattr };
++    neverallow { domain -vold -init -recovery } vold_data_file:dir *;
++    neverallow { domain -vold -init -recovery } vold_data_file:notdevfile_class_set *;
++    neverallow { domain -vold -init -recovery } restorecon_prop:property_service set;'
++)
+ 
+ neverallow vold fsck_exec:file execute_no_trans;
+-- 
+1.9.1
+

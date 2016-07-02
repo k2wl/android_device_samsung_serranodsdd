@@ -1,8 +1,0 @@
-allow rild proc_net:file write;
-allow rild self:capability { dac_read_search dac_override };
-allow rild system_file:file execmod;
-allow rild radio_data_file:dir { setattr r_dir_perms };
-allow rild radio_data_file:file r_file_perms;
-allow rild radio_data_file:lnk_file r_file_perms;
-allow rild system_app_data_file:dir rw_dir_perms;
-allow rild system_app_data_file:file create_file_perms;

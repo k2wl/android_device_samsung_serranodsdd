@@ -1,8 +1,0 @@
-# For FM radio
-allow qti_init_shell apk_data_file:dir { write add_name };
-allow qti_init_shell apk_data_file:file { create write };
-
-# For bluetooth mac address loading
-allow qti_init_shell efs_file:dir search;
-allow qti_init_shell bluetooth_efs_file:dir search;
-allow qti_init_shell bluetooth_efs_file:file r_file_perms;

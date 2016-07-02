@@ -43,16 +43,14 @@ TARGET_ARCH_VARIANT := armv7-a-neon
 TARGET_BOOTLOADER_BOARD_NAME := MSM8960
 
 # Kernel
-BOARD_KERNEL_CMDLINE         := androidboot.hardware=qcom user_debug=22 msm_rtb.filter=0x3F ehci-hcd.park=3 androidboot.bootdevice=msm_sdcc.1
-BOARD_KERNEL_BASE            := 0x80200000
-BOARD_MKBOOTIMG_ARGS         := --ramdisk_offset 0x02000000
-BOARD_KERNEL_PAGESIZE        := 2048
-TARGET_KERNEL_SOURCE         := kernel/samsung/msm8930-common
-ifneq ($(filter serranoltespr serranolteusc,$(TARGET_DEVICE)),)
-TARGET_KERNEL_CONFIG         := cyanogen_serrano_usa_defconfig
-else
-TARGET_KERNEL_CONFIG         := cyanogen_serrano_defconfig
-endif
+BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom user_debug=22 msm_rtb.filter=0x3F ehci-hcd.park=3 androidboot.bootdevice=msm_sdcc.1
+BOARD_KERNEL_BASE := 0x80200000
+BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x02000000
+BOARD_KERNEL_PAGESIZE := 2048
+TARGET_KERNEL_ARCH := arm
+TARGET_KERNEL_HEADER_ARCH := arm
+TARGET_KERNEL_SOURCE := kernel/samsung/msm8930-common
+TARGET_KERNEL_CONFIG := cyanogen_serrano_defconfig
 TARGET_KERNEL_VARIANT_CONFIG := msm8930_serrano_eur_3g_defconfig
 
 # Bluetooth
@@ -93,10 +91,8 @@ MAX_EGL_CACHE_KEY_SIZE := 12*1024
 MAX_EGL_CACHE_SIZE := 2048*1024
 
 # Audio
-BOARD_USES_GENERIC_AUDIO := false
-AUDIO_USE_LL_AS_PRIMARY_OUTPUT := true
-USE_CUSTOM_AUDIO_POLICY := 1
 BOARD_USES_ALSA_AUDIO := true
+BOARD_USES_GENERIC_AUDIO := false
 
 # FM
 AUDIO_FEATURE_ENABLED_FM_POWER_OPT := true

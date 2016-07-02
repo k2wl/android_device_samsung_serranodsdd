@@ -1,0 +1,28 @@
+From 4599fe6803b1f25763e33d1f94f695a1783d638d Mon Sep 17 00:00:00 2001
+From: k2wl <kar2wlan@gmail.com>
+Date: Tue, 28 Jun 2016 09:57:47 +0530
+Subject: [PATCH] Disable recovery flash
+
+Change-Id: Ifc2bd94c92540fcb387403a5a84726b491b1c477
+Signed-off-by: k2wl <kar2wlan@gmail.com>
+---
+ rootdir/init.rc | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/rootdir/init.rc b/rootdir/init.rc
+index a359713..6ad6910 100644
+--- a/rootdir/init.rc
++++ b/rootdir/init.rc
+@@ -604,6 +604,6 @@ on property:ro.debuggable=1
+     chmod 0773 /data/misc/trace
+     start console
+ 
+-service flash_recovery /system/bin/install-recovery.sh
+-    class main
+-    oneshot
++#service flash_recovery /system/bin/install-recovery.sh
++#    class main
++#    oneshot
+-- 
+1.9.1
+

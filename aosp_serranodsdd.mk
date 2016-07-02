@@ -49,7 +49,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.setupwizard.enterprise_mode=1 \
     ro.com.android.dateformat=MM-dd-yyyy \
     ro.com.android.dataroaming=false \
-    ro.build.selinux=0
 
 ifneq ($(TARGET_BUILD_VARIANT),eng)
 # Enable ADB authentication

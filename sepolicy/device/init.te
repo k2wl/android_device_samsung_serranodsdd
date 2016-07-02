@@ -1,4 +1,0 @@
-allow init camera_socket:sock_file relabelto;
-allow init labeledfs:filesystem associate;
-allow init system_file:file execmod;
-allow init debugfs:dir mounton;

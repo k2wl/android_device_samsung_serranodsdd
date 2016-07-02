@@ -1,0 +1,27 @@
+From 48fa41362ce14135dc9241241a92c553d5eb8d8e Mon Sep 17 00:00:00 2001
+From: k2wl <kar2wlan@gmail.com>
+Date: Wed, 29 Jun 2016 08:03:31 +0530
+Subject: [PATCH 2/2] Fix drep
+
+Change-Id: Ice554a4f31cd063bc8c614094600c5c5c9ef4150
+Signed-off-by: k2wl <kar2wlan@gmail.com>
+---
+ Android.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Android.mk b/Android.mk
+index 2b32cb6..7f4d37d 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -28,7 +28,7 @@ endif
+ 
+ # Builds paths for all policy files found in BOARD_SEPOLICY_DIRS and the LOCAL_PATH.
+ # $(1): the set of policy name paths to build
+-build_policy = $(call uniq, $(foreach type, $(1), $(foreach file, $(addsuffix /$(type), $(LOCAL_PATH) $(BOARD_SEPOLICY_DIRS)), $(sort $(wildcard $(file)))))
++build_policy = $(call uniq, $(foreach type, $(1), $(foreach file, $(addsuffix /$(type), $(LOCAL_PATH) $(BOARD_SEPOLICY_DIRS)), $(sort $(wildcard $(file))))))
+ 
+ # Builds paths for all policy files found in BOARD_SEPOLICY_DIRS.
+ # $(1): the set of policy name paths to build
+-- 
+1.9.1
+
